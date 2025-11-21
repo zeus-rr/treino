@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Plano Premium — Treino, Suplementação e Alimentação</title>
+    <meta name="description" content="Plano de treino de 5 dias completo com layout premium, dark mode, accordions modernos e funcionalidades interativas." />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuração do Tailwind com paleta revisada para estilo premium
+        tailwind.config = {
+            darkMode: 'class', 
+            theme: {
+                extend: {
+                    colors: {
+                        // Cores Principais
+                        'primary': '#4f46e5', // Indigo
+                        'secondary': '#10b981', // Emerald
+                        
+                        // Paleta Fundo/Card Aprimorada
+                        'bg-app': '#f7f8fc', // Fundo claro muito suave
+                        'bg-dark': '#0e1217', // Fundo escuro profundo
+                        'card-light': '#ffffff',
+                        'card-dark': '#1a202c', // Card escuro (mais claro que o fundo)
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos de Impressão */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: #fff; color: #000; }
+            .card { box-shadow: none !important; }
+            table { font-size: 10pt; }
+            .print-full-text .accordion-content { 
+                max-height: fit-content !important; 
+                opacity: 1 !important;
+            }
+        }
+        /* Acordeão Animado (Aprimorado) */
+        .accordion-content {
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out; /* Transição mais suave */
+            overflow: hidden;
+        }
+        .rotate-180 { transform: rotate(180deg); transition: transform 0.4s ease-out; }
+        /* Foco Premium */
+        .focus-ring:focus {
+            outline: 3px solid rgba(79, 70, 229, 0.5); 
+            outline-offset: 3px; 
+            border-radius: 0.75rem; 
+        }
+        /* Estilo de Linha de Exercício */
+        .exercise-row:hover {
+            background-color: rgba(255, 255, 255, 0.05); /* Efeito de hover sutil no dark mode */
+            transition: background-color 0.2s;
+        }
+        .dark .exercise-row:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+    </style>
+</head>
+<body class="bg-bg-app dark:bg-bg-dark text-slate-800 dark:text-slate-100 font-sans antialiased print-full-text">
+    
+    <header class="sticky top-0 z-50 shadow-lg bg-card-light/95 dark:bg-card-dark/95 backdrop-blur-sm no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-black text-lg shadow-xl">
+                    PF
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-900 dark:text-slate-50">Performance Flow</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Plano de Elite V2.1</p>
+                </div>
+            </div>
+            
+            <nav class="flex items-center gap-4">
+                <div class="hidden md:flex items-center gap-3">
+                    <a class="text-sm px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-card-dark/70 transition-colors" href="#treino">🏋️ Treino</a>
+                    <a class="text-sm px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-card-dark/70 transition-colors" href="#suplementos">💊 Suplementos</a>
+                    <a class="text-sm px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-card-dark/70 transition-colors" href="#alimentacao">🍎 Dieta</a>
+                </div>
+                
+                <button id="themeToggle" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-card-dark/70 focus-ring transition-colors" aria-label="Toggle Dark Mode">
+                    <svg id="moonIcon" class="w-6 h-6 hidden dark:block text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                    <svg id="sunIcon" class="w-6 h-6 block dark:hidden text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </button>
+                
+                <button onclick="window.print()" class="hidden sm:block bg-primary text-white px-3 py-2 rounded-xl shadow-md hover:bg-primary/90 transition-colors">Imprimir</button>
+            </nav>
+            
+            <div class="md:hidden">
+                <button id="hamburgerBtn" aria-expanded="false" aria-controls="mobileMenu" class="p-2 rounded-md focus-ring">
+                    <svg class="w-6 h-6 text-slate-700 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+        
+        <div id="mobileMenu" class="hidden md:hidden border-t dark:border-slate-800 bg-card-light dark:bg-card-dark">
+            <div class="px-4 py-3 flex flex-col gap-2">
+                <a href="#treino" class="py-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md px-2 transition-colors">🏋️ Treino</a>
+                <a href="#suplementos" class="py-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md px-2 transition-colors">💊 Suplementos</a>
+                <a href="#alimentacao" class="py-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md px-2 transition-colors">🍎 Alimentação</a>
+                <button onclick="window.print()" class="mt-2 bg-primary text-white py-2 rounded-xl hover:bg-primary/90 transition-colors">Imprimir Plano</button>
+            </div>
+        </div>
+    </header>
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        
+        <section class="bg-primary/10 dark:bg-primary/20 rounded-2xl p-6 shadow-2xl mb-10 border-t-8 border-primary/70">
+            <div class="md:flex md:items-center md:justify-between gap-6">
+                <div>
+                    <h2 class="text-3xl font-extrabold mb-1 text-primary dark:text-slate-100">Seu Plano de Elite</h2>
+                    <p class="text-slate-600 dark:text-slate-300 text-lg">Programa completo de 5 dias focado em **Hipertrofia e Força**.</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex gap-3 flex-shrink-0">
+                    <a class="px-5 py-2.5 bg-secondary text-white rounded-xl shadow-lg hover:bg-secondary/90 font-bold transition-colors" href="#treino">Iniciar Treino</a>
+                    <a class="px-5 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-card-dark/50 font-semibold transition-colors" href="#alimentacao">Ver Dieta</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl p-6 mb-10 border-t-4 border-red-500 no-print" id="restTimerContainer">
+            <h4 class="text-xl font-bold text-red-500 mb-2">⏱️ Cronômetro de Descanso</h4>
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div id="timerDisplay" class="text-6xl font-mono font-extrabold text-slate-900 dark:text-white bg-slate-100 dark:bg-bg-dark rounded-lg px-4 py-2 min-w-[150px] text-center shadow-inner" aria-live="polite">00:00</div>
+                <div class="flex space-x-3">
+                    <button id="startStopBtn" class="px-5 py-2.5 bg-secondary text-white rounded-lg shadow-md hover:bg-secondary/90 font-semibold transition-colors">Iniciar</button>
+                    <button id="resetBtn" class="px-5 py-2.5 bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-slate-300 rounded-lg shadow-md hover:bg-slate-400 dark:hover:bg-slate-600 font-semibold transition-colors">Zerar</button>
+                </div>
+            </div>
+        </div>
+        
+        <section id="playlist" class="mb-10">
+            <h3 class="text-2xl font-extrabold mb-4 border-b pb-2 border-slate-200 dark:border-slate-700">🎶 Playlist Motivacional para o Treino</h3>
+            <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden border border-slate-200 dark:border-slate-700">
+                <iframe 
+                    width="100%" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/videoseries?list=PLd1G92eN29YJm5429lJ-2d4p-kE3H9XlU&amp;modestbranding=1&amp;rel=0"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen
+                    title="Música para academia, Música eletrônica">
+                </iframe>
+                <div class="p-4 text-center text-sm text-slate-600 dark:text-slate-400 border-t dark:border-slate-700">
+                    Música para academia, Música eletrônica. Clique no play e use o cronômetro acima para controlar o descanso entre as séries!
+                </div>
+            </div>
+        </section>
+
+        <section id="treino" class="mb-10">
+            <h3 class="text-3xl font-extrabold mb-6 border-b pb-3 border-slate-300 dark:border-slate-700">🏋️ Treino — 5 Dias de Força e Volume</h3>
+            <div class="grid gap-6">
+                
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl border-l-8 border-secondary/80 p-6 transition-shadow duration-300 hover:shadow-2xl">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="day-1">
+                        <div>
+                            <h4 class="text-2xl font-bold text-secondary">Dia 1 — Peito & Tríceps</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Hipertrofia | Aquecimento: 8–10 min.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="day-1" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm table-auto border-separate border-spacing-y-2">
+                                <thead class="text-slate-600 dark:text-slate-400"><tr><th class="p-2 text-left">Exercício</th><th class="p-2 text-left">Séries x Reps</th><th class="p-2 text-left">Descanso</th><th class="p-2 text-left">Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Supino Reto c/ Barra</td><td class="p-2">4 x 6–8</td><td class="p-2 font-extrabold bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 rounded-md">90–120s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Supino Inclinado (Halteres)</td><td class="p-2">3 x 8–10</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">60–90s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Crossover / Crucifixo no Cabo</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Mergulho (Paralelas) — leve</td><td class="p-2">3 x 8–12</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">60–90s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Tríceps Testa</td><td class="p-2">3 x 10–12</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Tríceps Pulley (Corda)</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">30–45s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-600 dark:text-slate-400 font-medium">Observação: termine com 5 minutos de alongamento leve. **Foco total na conexão mente-músculo.**</div>
+                    </div>
+                </article>
+                
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl border-l-8 border-indigo-500/80 p-6 transition-shadow duration-300 hover:shadow-2xl">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="day-2">
+                        <div>
+                            <h4 class="text-2xl font-bold text-indigo-500">Dia 2 — Costas & Bíceps</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Força e postura | Aquecimento: mobilidade de ombro.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="day-2" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm table-auto border-separate border-spacing-y-2">
+                                <thead class="text-slate-600 dark:text-slate-400"><tr><th class="p-2 text-left">Exercício</th><th class="p-2 text-left">Séries x Reps</th><th class="p-2 text-left">Descanso</th><th class="p-2 text-left">Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Levantamento Terra (variação leve)</td><td class="p-2">4 x 4–6</td><td class="p-2 font-extrabold bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 rounded-md">120–150s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Puxada Alta (Pegada Pronada)</td><td class="p-2">4 x 8–10</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">90s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Remada Curvada</td><td class="p-2">3 x 8–10</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">90s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Remada Unilateral</td><td class="p-2">3 x 10–12 (cada lado)</td><td class="p-2 font-semibold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">60–75s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Rosca Direta</td><td class="p-2">3 x 8–12</td><td class="p-2 font-semibold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">60–75s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Rosca Martelo</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-600 dark:text-slate-400 font-medium">Observação: se for iniciante, substituir levantamento terra por puxada e remada com foco na técnica.</div>
+                    </div>
+                </article>
+                
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl border-l-8 border-cyan-500/80 p-6 transition-shadow duration-300 hover:shadow-2xl">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="day-3">
+                        <div>
+                            <h4 class="text-2xl font-bold text-cyan-500">Dia 3 — Pernas (Quadríceps) & Panturrilhas</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Força | Aquecimento: 10 min bicicleta leve.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="day-3" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm table-auto border-separate border-spacing-y-2">
+                                <thead class="text-slate-600 dark:text-slate-400"><tr><th class="p-2 text-left">Exercício</th><th class="p-2 text-left">Séries x Reps</th><th class="p-2 text-left">Descanso</th><th class="p-2 text-left">Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Agachamento Livre</td><td class="p-2">4 x 6–8</td><td class="p-2 font-extrabold bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 rounded-md">120s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Leg Press 45º</td><td class="p-2">3 x 10–12</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">90s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Cadeira Extensora</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Avanço (Lunge) — Caminhando</td><td class="p-2">3 x 10 (cada perna)</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">60–75s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Panturrilha em Pé</td><td class="p-2">4 x 15–20</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">30–45s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-600 dark:text-slate-400 font-medium">Observação: incluir mobilidade de tornozelo se sentir limitações.</div>
+                    </div>
+                </article>
+                
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl border-l-8 border-amber-500/80 p-6 transition-shadow duration-300 hover:shadow-2xl">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="day-4">
+                        <div>
+                            <h4 class="text-2xl font-bold text-amber-500">Dia 4 — Ombros & Trapézio</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Estabilidade e saúde do ombro.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="day-4" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm table-auto border-separate border-spacing-y-2">
+                                <thead class="text-slate-600 dark:text-slate-400"><tr><th class="p-2 text-left">Exercício</th><th class="p-2 text-left">Séries x Reps</th><th class="p-2 text-left">Descanso</th><th class="p-2 text-left">Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Desenvolvimento Militar (Halteres)</td><td class="p-2">4 x 8–10</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">90s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Elevação Lateral</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Elevação Frontal (Halter)</td><td class="p-2">3 x 10–12</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Face Pull</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Encolhimento (Trapézio)</td><td class="p-2">3 x 15–20</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">30–45s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-600 dark:text-slate-400 font-medium">Observação: faça mobilidade rotacional antes de cargas altas.</div>
+                    </div>
+                </article>
+                
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl border-l-8 border-lime-500/80 p-6 transition-shadow duration-300 hover:shadow-2xl">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="day-5">
+                        <div>
+                            <h4 class="text-2xl font-bold text-lime-500">Dia 5 — Posterior de Coxa & Abdômen</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Isquiotibiais e core | Aquecimento: 8 min corrida leve.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="day-5" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm table-auto border-separate border-spacing-y-2">
+                                <thead class="text-slate-600 dark:text-slate-400"><tr><th class="p-2 text-left">Exercício</th><th class="p-2 text-left">Séries x Reps</th><th class="p-2 text-left">Descanso</th><th class="p-2 text-left">Status</th></tr></thead>
+                                <tbody>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Stiff com Barra</td><td class="p-2">4 x 8–10</td><td class="p-2 font-extrabold bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 rounded-md">90–120s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Mesa Flexora</td><td class="p-2">3 x 10–15</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">60–75s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Cadeira Flexora</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Elevação de Pernas (Colgado)</td><td class="p-2">3 x 12–15</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">45–60s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                    <tr class="exercise-row bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 exercise-name font-semibold">Prancha</td><td class="p-2">3 x 45–60s</td><td class="p-2 font-semibold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">30–45s</td><td class="p-2"><label class="flex items-center"><input type="checkbox" class="h-5 w-5 text-secondary rounded border-gray-300 dark:border-slate-600 focus:ring-secondary exercise-complete-checkbox"><span class="sr-only">Completar Exercício</span></label></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 text-sm text-slate-600 dark:text-slate-400 font-medium">Observação: tempo sob tensão é importante — mantenha controle do movimento.</div>
+                    </div>
+                </article>
+            </div>
+        </section>
+        
+        <section id="suplementos" class="mb-10">
+            <h3 class="text-3xl font-extrabold mb-6 border-b pb-3 border-slate-300 dark:border-slate-700">💊 Suplementação Essencial</h3>
+            <div class="bg-card-light dark:bg-card-dark rounded-xl shadow-xl border-t-8 border-secondary/80 p-6">
+                <button class="accordion-toggle w-full flex items-center justify-between text-left focus-ring" aria-expanded="false" aria-controls="supp-section">
+                    <div>
+                        <h4 class="text-2xl font-bold text-secondary">Doses e Notas Importantes</h4>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Consulte um profissional antes de iniciar.</p>
+                    </div>
+                    <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                </button>
+                <div id="supp-section" class="accordion-content max-h-0 opacity-0 mt-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm table-auto border-separate border-spacing-y-2">
+                            <thead class="text-slate-600 dark:text-slate-400"><tr><th class="p-2 text-left">Suplemento</th><th class="p-2 text-left">Dose Recomendada</th><th class="p-2 text-left">Quando usar</th></tr></thead>
+                            <tbody>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 font-extrabold text-primary">Creatina Monohidratada</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">3–5g/dia</td><td class="p-2">Todos os dias</td></tr>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 font-extrabold text-secondary">Whey Protein</td><td class="p-2 font-bold bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 rounded-md">20–30g (1 scoop)</td><td class="p-2">Pós-treino</td></tr>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 font-extrabold text-red-500">Cafeína</td><td class="p-2 font-bold bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 rounded-md">3–6 mg/kg (variável)</td><td class="p-2">Pré-treino (30 min antes)</td></tr>
+                                <tr class="bg-slate-50 dark:bg-slate-800/50 rounded-lg shadow-sm"><td class="p-2 font-extrabold">Beta-Alanina</td><td class="p-2 font-bold bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-300 rounded-md">2–3g/dia</td><td class="p-2">Diariamente, ideal antes do treino</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="alimentacao" class="mb-12">
+            <h3 class="text-3xl font-extrabold mb-6 border-b pb-3 border-slate-300 dark:border-slate-700">🍎 Plano Alimentar Detalhado — Sugestão Diária</h3>
+            <div class="grid gap-6">
+
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border-l-6 border-primary/80 p-6">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="meal-1">
+                        <div>
+                            <h4 class="text-xl font-bold text-primary">1. Pequeno-Almoço (07:00)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Carboidratos complexos e Proteína para o dia.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="meal-1" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <ul class="space-y-4 text-slate-700 dark:text-slate-300">
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/4f46e5/ffffff?text=Ovos" alt="Ovos" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Proteína:** 4 claras + 1 gema. <span class="text-xs text-slate-500 dark:text-slate-400 block">Opção: 1 scoop de Whey com água.</span></div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/4f46e5/ffffff?text=Aveia" alt="Aveia" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Carboidrato:** 1/2 chávena de Aveia ou 3 fatias de Pão Integral.</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/4f46e5/ffffff?text=Fruta" alt="Fruta" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Fruta:** 1 Banana Média ou 1 Maçã.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border-l-6 border-secondary/80 p-6">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="meal-2">
+                        <div>
+                            <h4 class="text-xl font-bold text-secondary">2. Meio da Manhã / Pré-Treino (10:00)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Energia rápida antes do treino.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="meal-2" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <ul class="space-y-4 text-slate-700 dark:text-slate-300">
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/10b981/ffffff?text=Iogurte" alt="Iogurte" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Lacticínio:** 1 Pote de Iogurte Grego Light (ou Skyr).</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/10b981/ffffff?text=Fruta" alt="Fruta" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Carboidrato:** 1 Banana ou 1 colher de sopa de Mel (para um impulso rápido).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border-l-6 border-cyan-500/80 p-6">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="meal-3">
+                        <div>
+                            <h4 class="text-xl font-bold text-cyan-500">3. Almoço / Pós-Treino (13:00)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Reposição máxima de Glicogénio e Proteína.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="meal-3" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <ul class="space-y-4 text-slate-700 dark:text-slate-300">
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/06b6d4/ffffff?text=Frango" alt="Frango" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Proteína:** 150g de Peito de Frango (grelhado/cozido) ou Peixe.</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/06b6d4/ffffff?text=Arroz" alt="Arroz" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Carboidrato:** 1 a 1.5 chávena de Arroz Integral ou Batata Doce.</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/06b6d4/ffffff?text=Salada" alt="Salada" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Vegetais:** Salada mista à vontade + Azeite extra virgem.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border-l-6 border-amber-500/80 p-6">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="meal-4">
+                        <div>
+                            <h4 class="text-xl font-bold text-amber-500">4. Lanche da Tarde (16:30)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Proteína e Gorduras saudáveis.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="meal-4" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <ul class="space-y-4 text-slate-700 dark:text-slate-300">
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/f59e0b/ffffff?text=Queijo" alt="Queijo" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Proteína:** 100g de Queijo Fresco (ou Cottage/Ricota).</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/f59e0b/ffffff?text=Amendoim" alt="Amendoim" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Gordura:** 1 Colher de sopa de Pasta de Amendoim (sem açúcar).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border-l-6 border-lime-500/80 p-6">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="meal-5">
+                        <div>
+                            <h4 class="text-xl font-bold text-lime-500">5. Jantar (20:00)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Refeição completa e leve antes de dormir.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="meal-5" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <ul class="space-y-4 text-slate-700 dark:text-slate-300">
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/84cc16/ffffff?text=Carne" alt="Carne" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Proteína:** 150g de Carne Magra (Vaca/Porco) ou Peixe.</div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <img src="https://via.placeholder.com/64x64/84cc16/ffffff?text=Legumes" alt="Legumes" class="w-12 h-12 object-cover rounded-full shadow-md flex-shrink-0">
+                                <div class="font-medium">**Carboidrato/Vegetais:** Legumes cozidos (Brócolos/Cenoura) + 1 Batata Média (se não treinou à noite, reduza o carboidrato).</div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+                
+                <article class="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border-l-6 border-red-500/80 p-6">
+                    <button class="accordion-toggle w-full flex items-start justify-between gap-4 text-left focus-ring" aria-expanded="false" aria-controls="meal-general">
+                        <div>
+                            <h4 class="text-xl font-bold text-red-500">6. Regras Gerais (Crucial)</h4>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Foco: Hidratação e consistência.</p>
+                        </div>
+                        <svg class="w-6 h-6 text-primary transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="meal-general" class="accordion-content max-h-0 opacity-0 mt-4" role="region">
+                        <ul class="list-disc ml-5 space-y-3 text-slate-700 dark:text-slate-300 font-semibold">
+                            <li>💧 Beba pelo menos **3 a 4 litros de água** por dia.</li>
+                            <li>🚫 Evitar ao máximo: Açúcares, Fritos, Refrigerantes e Sumos processados.</li>
+                            <li>🍚 Ajuste as quantidades de Carboidrato no almoço consoante o seu treino.</li>
+                            <li>😴 Durma 7 a 9 horas por noite para máxima recuperação e hipertrofia.</li>
+                        </ul>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+        
+        <footer class="bg-card-light dark:bg-card-dark border-t dark:border-slate-800 text-sm text-slate-600 dark:text-slate-400 py-8 no-print">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <h5 class="font-bold mb-3 text-slate-800 dark:text-slate-100">O Plano</h5>
+                        <ul class="space-y-2">
+                            <li><a href="#treino" class="hover:text-primary transition-colors">Treino 5 Dias</a></li>
+                            <li><a href="#suplementos" class="hover:text-primary transition-colors">Recomendações</a></li>
+                            <li><a href="#alimentacao" class="hover:text-primary transition-colors">Dieta Detalhada</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h5 class="font-bold mb-3 text-slate-800 dark:text-slate-100">Recursos</h5>
+                        <ul class="space-y-2">
+                            <li><a href="#" onclick="window.print();return false;" class="hover:text-primary transition-colors">Imprimir PDF</a></li>
+                            <li class="mt-2">
+                                <label for="tmb-calc" class="block text-xs font-medium text-slate-500 dark:text-slate-400">Calcular TMB (Simulação)</label>
+                                <input type="number" id="tmb-calc" placeholder="Seu peso (kg)" class="w-full text-xs mt-1 p-1 border rounded-md dark:bg-card-dark dark:border-slate-700 focus:ring-primary focus:border-primary">
+                            </li>
+                            <li><a href="#" class="hover:text-primary transition-colors">Blog de Saúde</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-span-2 md:col-span-2">
+                        <h5 class="font-bold mb-3 text-slate-800 dark:text-slate-100">Fale Conosco</h5>
+                        <p>Dúvidas? Entre em contato para ajustes personalizados no seu plano.</p>
+                        <a href="mailto:contato@exemplo.com" class="mt-3 inline-block text-white bg-primary px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors">Email de Contato</a>
+                    </div>
+                </div>
+                <div class="pt-6 mt-6 border-t dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-3">
+                    <p class="text-xs">© 2025 Performance Flow. Todos os direitos reservados.</p>
+                    <p class="text-xs">⚠️ Consulte sempre um profissional de educação física e nutricionista.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+    
+    <script>
+        // ----------------------------------------------------
+        // 1. Dark Mode Toggle Logic
+        // ----------------------------------------------------
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        function setInitialTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+        }
+
+        themeToggle && themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+        setInitialTheme();
+
+        // ----------------------------------------------------
+        // 2. Mobile Menu Toggle
+        // ----------------------------------------------------
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburgerBtn && hamburgerBtn.addEventListener('click', () => {
+            const expanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+            hamburgerBtn.setAttribute('aria-expanded', String(!expanded));
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // ----------------------------------------------------
+        // 3. Accordion Behavior (Aprimorado)
+        // ----------------------------------------------------
+        const accordionToggles = document.querySelectorAll('.accordion-toggle');
+
+        const toggleAccordion = (btn) => {
+            const svg = btn.querySelector('svg');
+            const content = document.getElementById(btn.getAttribute('aria-controls'));
+            if(!content) return;
+
+            const isOpen = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', String(!isOpen));
+
+            if (!isOpen) {
+                // Abrir
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.style.opacity = "1";
+                svg && svg.classList.add('rotate-180');
+            } else {
+                // Fechar
+                content.style.maxHeight = "0px";
+                content.style.opacity = "0";
+                svg && svg.classList.remove('rotate-180');
+            }
+        };
+
+        accordionToggles.forEach(btn => {
+            btn.addEventListener('click', () => toggleAccordion(btn));
+
+            // Acessibilidade: permitir Enter / Space
+            btn.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleAccordion(btn);
+                }
+            });
+        });
+
+        // Garantir maxHeight correto no resize
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.accordion-toggle[aria-expanded="true"]').forEach(btn => {
+                const content = document.getElementById(btn.getAttribute('aria-controls'));
+                if (content) content.style.maxHeight = content.scrollHeight + "px";
+            });
+        });
+        
+        // Inicialização: definir maxHeight e opacity como 0 (Estado inicial fechado)
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.accordion-content').forEach(el => {
+                el.style.maxHeight = '0px';
+                el.style.opacity = '0';
+            });
+        });
+
+        // ----------------------------------------------------
+        // 4. Cronômetro de Descanso Logic
+        // ----------------------------------------------------
+        let timer;
+        let seconds = 0;
+        let isRunning = false;
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startStopBtn = document.getElementById('startStopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function formatTime(sec) {
+            const minutes = Math.floor(sec / 60);
+            const remainingSeconds = sec % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            seconds++;
+            timerDisplay.textContent = formatTime(seconds);
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                startStopBtn.textContent = 'Parar';
+                startStopBtn.setAttribute('aria-label', 'Parar Cronômetro');
+                startStopBtn.classList.remove('bg-secondary', 'hover:bg-secondary/90');
+                startStopBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                timer = setInterval(updateTimer, 1000);
+            }
+        }
+
+        function stopTimer() {
+            if (isRunning) {
+                isRunning = false;
+                startStopBtn.textContent = 'Continuar';
+                startStopBtn.setAttribute('aria-label', 'Continuar Cronômetro');
+                startStopBtn.classList.add('bg-secondary', 'hover:bg-secondary/90');
+                startStopBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+                clearInterval(timer);
+            }
+        }
+
+        function resetTimer() {
+            stopTimer();
+            seconds = 0;
+            timerDisplay.textContent = '00:00';
+            startStopBtn.textContent = 'Iniciar';
+            startStopBtn.setAttribute('aria-label', 'Iniciar Cronômetro');
+        }
+
+        startStopBtn.addEventListener('click', () => {
+            if (isRunning) {
+                stopTimer();
+            } else {
+                startTimer();
+            }
+        });
+
+        resetBtn.addEventListener('click', resetTimer);
+
+        // ----------------------------------------------------
+        // 5. Checkbox de Conclusão de Exercício Logic
+        // ----------------------------------------------------
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.exercise-complete-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const row = this.closest('.exercise-row');
+                    const nameCell = row.querySelector('.exercise-name');
+
+                    if (this.checked) {
+                        // Marcar como concluído (efeito visual)
+                        row.classList.add('opacity-50', 'bg-green-500/10', 'dark:bg-green-900/20', 'shadow-inner');
+                        nameCell.style.textDecoration = 'line-through';
+                    } else {
+                        // Marcar como pendente
+                        row.classList.remove('opacity-50', 'bg-green-500/10', 'dark:bg-green-900/20', 'shadow-inner');
+                        nameCell.style.textDecoration = 'none';
+                    }
+                });
+            });
+        });
+
+        // ----------------------------------------------------
+        // 6. Simulação de Cálculo de TMB
+        // ----------------------------------------------------
+        const tmbInput = document.getElementById('tmb-calc');
+
+        tmbInput && tmbInput.addEventListener('input', function() {
+            const weight = parseFloat(this.value);
+            // Fórmula simplificada de TMB (para fins de demonstração da UI)
+            const TMB = (weight * 22) + 500; 
+            
+            if (weight > 0) {
+                this.placeholder = `TMB Estimada: ${TMB.toFixed(0)} kcal`;
+            } else {
+                this.placeholder = "Seu peso (kg)";
+            }
+        });
+    </script>
+</body>
+</html>
