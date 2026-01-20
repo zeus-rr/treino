@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="pt-BR" class="dark">
 <head>
-    <link rel="icon" href="https://zeus-rr.github.io/treino/icon.png">
+<link rel="icon" href="https://zeus-rr.github.io/treino/icon.png">
   <link rel="apple-touch-icon" href="https://zeus-rr.github.io/treino/icon.png">
   <link rel="shortcut icon" href=https://zeus-rr.github.io/treino/icon.png">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>TREINO PERSONAL JAQUE - V2</title>
+    <title>TREINO PERSONAL JAQUE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,7 +17,7 @@
     <style>
         .is-conjugated { margin-bottom: -1rem !important; border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; border-bottom: 2px dashed #6366f1 !important; z-index: 10; }
         .is-conjugated + .workout-item { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
-        .is-student-mode .admin-ui, .is-student-mode .edit-btn { display: none !important; }
+        .is-student-mode .admin-ui, .is-student-mode .edit-btn, .is-student-mode #btnTutorial { display: none !important; }
         .is-student-mode main { grid-template-columns: 1fr !important; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
@@ -25,9 +25,8 @@
         .category-content.active { display: block; }
         @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
         body { transition: background-color 0.3s ease, color 0.3s ease; }
-    </style>
-</head>
- /* Modal Style */
+        
+        /* Modal Style */
         #tutorialModal { display: none; }
         #tutorialModal.active { display: flex; }
     </style>
@@ -86,18 +85,22 @@
 
     <header class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-black italic uppercase tracking-tighter">PROFESSORA<span class="text-primary">JAQUE</span></h1>
+            <h1 class="text-xl font-black italic uppercase tracking-tighter">PERSONAL<span class="text-primary">JAQUE</span></h1>
             
             <div class="flex items-center gap-3">
                 <div id="studentDisplayHead" class="text-sm font-bold text-primary hidden sm:block"></div>
                 
+                <button id="btnTutorial" onclick="toggleTutorial()" class="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-500 px-3 py-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 transition-all hover:bg-primary/10 hover:text-primary">
+                    Como usar? ❓
+                </button>
+
                 <a href="https://wa.me/5515981776856?text=Olá%20Professora%20Jaque,%20gostaria%20de%20tirar%20uma%20dúvida%20sobre%20meu%20treino!" 
                    target="_blank" 
                    class="hidden sm:flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all">
                    Suporte
                 </a>
 
-                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-primary/20 transition-all border border-slate-200 dark:border-slate-700" title="Alternar Tema">
+                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-primary/20 transition-all border border-slate-200 dark:border-slate-700">
                     <span class="dark:hidden">🌙</span>
                     <span class="hidden dark:inline">☀️</span>
                 </button>
@@ -109,11 +112,9 @@
        target="_blank" 
        class="fixed bottom-6 right-6 z-[60] bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center group no-print">
        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.675 1.437 5.662 1.438h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-       <span class="absolute right-16 bg-white dark:bg-slate-800 text-slate-800 dark:text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">Falar com Jaque</span>
     </a>
 
     <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
         <aside class="lg:col-span-4 space-y-4 admin-ui">
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
                 <label class="text-[10px] font-bold uppercase opacity-50 ml-2">Identificação do Aluno</label>
@@ -131,7 +132,6 @@
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
                 <h3 class="text-xs font-black uppercase mb-4 text-primary tracking-widest">Biblioteca de Exercícios</h3>
                 <input type="text" id="searchEx" placeholder="🔍 Buscar na biblioteca..." class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4 text-sm outline-none focus:ring-1 focus:ring-primary">
-                
                 <div id="accordionLib" class="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
         </aside>
@@ -142,17 +142,16 @@
                 <button onclick="window.print()" class="bg-slate-700 text-white px-6 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">Gerar PDF 📄</button>
                 <button onclick="clearAll()" class="bg-red-500/10 text-red-500 px-6 py-3 rounded-full font-black text-[10px] uppercase admin-ui">Limpar Tudo</button>
             </div>
-
             <div id="weekDisplay" class="space-y-10"></div>
-
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 mt-8">
                 <h3 class="text-xs font-black uppercase mb-4 text-primary tracking-widest">Observações Gerais do Treino</h3>
-                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none focus:ring-1 focus:ring-primary min-h-[100px]" placeholder="Dicas gerais, orientações de dieta ou avisos..."></textarea>
+                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none focus:ring-1 focus:ring-primary min-h-[100px]" placeholder="Dicas gerais..."></textarea>
             </div>
         </section>
     </main>
 
     <script>
+        // Dados e Biblioteca (Mesmos da versão anterior)
         const exerciseLibrary = {
             "Cárdio (Bike e Transport)": ["Bicicleta Ergométrica (Moderado)", "Bicicleta Ergométrica (Intervalado/HIIT)", "Transport (Eliptico) - Resistência Alta", "Transport (Eliptico) - Velocidade", "Spinning Individual", "Air Bike (Assault Bike)"],
             "Exercícios com Bola (Swiss Ball)": ["Abdominal na Bola", "Ponte na Bola", "Extensão Lombar na Bola", "Agachamento com Bola na Parede", "Prancha com Antebraço na Bola", "Passagem de Bola (Mãos para Pés)"],
@@ -167,11 +166,11 @@
             "Panturrilha e Core": ["Gêmeos em Pé", "Gêmeos Sentado", "Gêmeos no Leg Press", "Abdominal Supra", "Abdominal Infra", "Prancha Isométrica", "Russian Twist", "Abdominal Roda", "V-Sit"],
         };
 
-        let workoutData = { 
-            student: "", 
-            generalNotes: "",
-            days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
-        };
+        let workoutData = { student: "", generalNotes: "", days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } };
+
+        function toggleTutorial() {
+            document.getElementById('tutorialModal').classList.toggle('active');
+        }
 
         function toggleTheme() {
             const html = document.documentElement;
@@ -186,11 +185,8 @@
 
         function init() {
             const savedTheme = localStorage.getItem('theme_jaque');
-            if (savedTheme === 'light') {
-                document.documentElement.classList.remove('dark');
-            } else {
-                document.documentElement.classList.add('dark');
-            }
+            if (savedTheme === 'light') document.documentElement.classList.remove('dark');
+            else document.documentElement.classList.add('dark');
 
             renderLibrary();
             loadFromStorage();
@@ -200,17 +196,15 @@
             
             if (alunoData) {
                 try {
-                    const decoded = decodeURIComponent(atob(alunoData).split('').map(function(c) {
-                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                    }).join(''));
-                    
+                    const decoded = decodeURIComponent(atob(alunoData).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
                     workoutData = JSON.parse(decoded);
                     document.body.classList.add('is-student-mode');
-                } catch(e) { console.error("Erro ao carregar link: ", e); }
+                } catch(e) { console.error("Erro ao carregar link"); }
             }
             render();
         }
 
+        // Funções de Renderização (Mantidas da versão anterior com correções)
         function renderLibrary() {
             const container = document.getElementById('accordionLib');
             container.innerHTML = "";
@@ -223,11 +217,7 @@
                         <span class="text-primary">+</span>
                     </button>
                     <div class="category-content p-2 bg-white dark:bg-slate-900 space-y-1">
-                        ${exerciseLibrary[cat].map(ex => `
-                            <div onclick="addEx('${ex}')" class="p-2 text-[11px] font-medium hover:bg-primary hover:text-white rounded-lg cursor-pointer transition">
-                                ${ex}
-                            </div>
-                        `).join('')}
+                        ${exerciseLibrary[cat].map(ex => `<div onclick="addEx('${ex}')" class="p-2 text-[11px] font-medium hover:bg-primary hover:text-white rounded-lg cursor-pointer transition">${ex}</div>`).join('')}
                     </div>
                 `;
                 container.appendChild(catDiv);
@@ -243,8 +233,7 @@
         function addEx(name) {
             const day = document.getElementById('daySelector').value;
             workoutData.days[day].push({ n: name, r: "3x12", w: "", obs: "", bi: false });
-            save();
-            render();
+            save(); render();
         }
 
         function save() {
@@ -255,10 +244,7 @@
 
         function loadFromStorage() {
             const saved = localStorage.getItem('jaque_pro_v2');
-            if(saved) {
-                const parsed = JSON.parse(saved);
-                workoutData = {...workoutData, ...parsed};
-            }
+            if(saved) workoutData = {...workoutData, ...JSON.parse(saved)};
         }
 
         function render() {
@@ -287,23 +273,20 @@
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
                                 <h4 class="font-bold text-sm uppercase tracking-tight">${ex.n}</h4>
-                                <input type="text" value="${ex.obs || ''}" placeholder="Adicionar observação específica..." 
-                                    oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()" 
-                                    class="w-full mt-2 bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 text-[10px] outline-none focus:border-primary italic">
-                                
+                                <input type="text" value="${ex.obs || ''}" oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()" class="w-full mt-2 bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 text-[10px] outline-none italic" placeholder="Obs...">
                                 <div class="flex gap-2 mt-3 no-print">
-                                    <button onclick="toggleBi('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full ${ex.bi ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800'} transition">CONJUGADO</button>
+                                    <button onclick="toggleBi('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full ${ex.bi ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800'}">CONJUGADO</button>
                                     <button onclick="removeEx('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full bg-red-500/10 text-red-500">REMOVER</button>
                                 </div>
                             </div>
                             <div class="flex gap-4 ml-4">
                                 <div class="flex flex-col items-center">
-                                    <span class="text-[7px] uppercase font-black opacity-40 mb-1">Séries/Rep</span>
-                                    <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-16 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none focus:ring-1 focus:ring-primary">
+                                    <span class="text-[7px] font-black opacity-40 mb-1 uppercase">Séries</span>
+                                    <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-16 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl">
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <span class="text-[7px] uppercase font-black opacity-40 mb-1">Carga</span>
-                                    <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" placeholder="Kg" class="w-14 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none focus:ring-1 focus:ring-primary">
+                                    <span class="text-[7px] font-black opacity-40 mb-1 uppercase">Carga</span>
+                                    <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" class="w-14 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl">
                                 </div>
                             </div>
                         </div>
@@ -315,30 +298,20 @@
         }
 
         function toggleBi(day, idx) { workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi; save(); render(); }
-        function removeEx(day, idx) { if(confirm("Remover exercício?")) { workoutData.days[day].splice(idx, 1); save(); render(); } }
-        function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
+        function removeEx(day, idx) { if(confirm("Remover?")) { workoutData.days[day].splice(idx, 1); save(); render(); } }
+        function updateHeader() { updateHeaderReal(); }
+        function updateHeaderReal() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
         
         function generateLink() {
             save();
             const jsonStr = JSON.stringify(workoutData);
-            const encoded = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
-                return String.fromCharCode('0x' + p1);
-            }));
+            const encoded = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
             const url = `${window.location.origin}${window.location.pathname}?aluno=${encoded}`;
             navigator.clipboard.writeText(url);
-            alert("Link do aluno copiado com sucesso!");
+            alert("Link copiado!");
         }
 
-        function clearAll() { if(confirm("Apagar todos os dados do treino atual?")) { localStorage.removeItem('jaque_pro_v2'); location.reload(); } }
-
-        document.getElementById('searchEx').addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.category-content div').forEach(el => {
-                const match = el.innerText.toLowerCase().includes(term);
-                el.style.display = match ? 'block' : 'none';
-                if(term.length > 1 && match) el.parentElement.classList.add('active');
-            });
-        });
+        function clearAll() { if(confirm("Limpar tudo?")) { localStorage.removeItem('jaque_pro_v2'); location.reload(); } }
 
         init();
     </script>
