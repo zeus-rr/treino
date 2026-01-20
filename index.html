@@ -27,7 +27,62 @@
         body { transition: background-color 0.3s ease, color 0.3s ease; }
     </style>
 </head>
+ /* Modal Style */
+        #tutorialModal { display: none; }
+        #tutorialModal.active { display: flex; }
+    </style>
+</head>
 <body class="bg-slate-100 dark:bg-[#0b0f1a] text-slate-800 dark:text-slate-100 font-sans antialiased">
+
+    <div id="tutorialModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm p-4 items-center justify-center">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                <h2 class="text-xl font-black uppercase italic text-primary">Guia de Uso - Prof. Jaque</h2>
+                <button onclick="toggleTutorial()" class="text-slate-400 hover:text-red-500 font-bold text-2xl">&times;</button>
+            </div>
+            <div class="p-8 overflow-y-auto custom-scrollbar space-y-8">
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center font-black shrink-0">01</div>
+                    <div>
+                        <h4 class="font-bold uppercase text-sm mb-1">Identifique o Aluno</h4>
+                        <p class="text-xs opacity-70 mb-3">Digite o nome e selecione o dia que deseja montar o treino primeiro.</p>
+                        <div class="bg-slate-100 dark:bg-slate-800 p-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+                            <div class="h-4 w-3/4 bg-slate-300 dark:bg-slate-700 rounded mb-2"></div>
+                            <div class="h-4 w-1/2 bg-primary/30 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center font-black shrink-0">02</div>
+                    <div>
+                        <h4 class="font-bold uppercase text-sm mb-1">Adicione Exercícios</h4>
+                        <p class="text-xs opacity-70 mb-3">Use a biblioteca lateral. Clique na categoria e depois no exercício para enviá-lo ao painel.</p>
+                        <div class="flex gap-2">
+                            <div class="px-3 py-1 bg-primary text-white text-[10px] rounded-full font-bold">Peitorais +</div>
+                            <div class="px-3 py-1 bg-slate-200 dark:bg-slate-700 text-[10px] rounded-full font-bold opacity-50">Costas +</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center font-black shrink-0">03</div>
+                    <div>
+                        <h4 class="font-bold uppercase text-sm mb-1">Combine Treinos (Bi-set)</h4>
+                        <p class="text-xs opacity-70 mb-3">Clique no botão <span class="text-primary font-bold">CONJUGADO</span> para unir dois exercícios visualmente, indicando que devem ser feitos sem descanso.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4">
+                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center font-black shrink-0">04</div>
+                    <div>
+                        <h4 class="font-bold uppercase text-sm mb-1">Compartilhe o Link</h4>
+                        <p class="text-xs opacity-70 mb-3">Clique em <span class="bg-primary text-white px-2 py-0.5 rounded text-[10px]">COPIAR LINK</span>. O link gerado já contém todos os dados e abre direto no modo de visualização para o aluno.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6 bg-slate-50 dark:bg-slate-800/50 text-center">
+                <button onclick="toggleTutorial()" class="bg-primary text-white px-8 py-3 rounded-full font-black uppercase text-xs shadow-lg shadow-primary/30 hover:scale-105 transition-transform">Entendi, vamos lá!</button>
+            </div>
+        </div>
+    </div>
 
     <header class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
