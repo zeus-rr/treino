@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>TREINO PROFESSORA JAQUE - V2</title>
+    <title>TREINO PERSONAL JAQUE - V2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -96,7 +96,7 @@
 
         let workoutData = { 
             student: "", 
-            generalNotes: "",
+            alNotes: "",
             days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
         };
 
@@ -171,7 +171,7 @@
 
         function save() {
             workoutData.student = document.getElementById('studentName').value;
-            workoutData.generalNotes = document.getElementById('generalNotes').value;
+            workoutData.alNotes = document.getElementById('alNotes').value;
             localStorage.setItem('jaque_pro_v2', JSON.stringify(workoutData));
         }
 
@@ -187,7 +187,7 @@
             const container = document.getElementById('weekDisplay');
             container.innerHTML = "";
             document.getElementById('studentName').value = workoutData.student || "";
-            document.getElementById('generalNotes').value = workoutData.generalNotes || "";
+            document.getElementById('alNotes').value = workoutData.alNotes || "";
             document.getElementById('studentDisplayHead').innerText = workoutData.student ? `ALUNO: ${workoutData.student}` : "";
 
             const dayNames = {segunda: "Segunda-feira", terca: "Terça-feira", quarta: "Quarta-feira", quinta: "Quinta-feira", sexta: "Sexta-feira", sabado: "Sábado"};
@@ -240,12 +240,45 @@
         function removeEx(day, idx) { if(confirm("Remover exercício?")) { workoutData.days[day].splice(idx, 1); save(); render(); } }
         function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
         
-        function generateLink() {
-            save();
-            const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(workoutData))));
-            const url = `${window.location.origin}${window.location.pathname}?aluno=${encoded}`;
-            navigator.clipboard.writeText(url);
-            alert("Link do aluno copiado com sucesso!");
+        // 1. Atualize a função de gerar o link para tratar caracteres especiais
+function generateLink() {
+    save();
+    // Converte o objeto em string e depois em uma URI segura para preservar acentos
+    const jsonStr = JSON.stringify(workoutData);
+    const encoded = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+        return String.fromCharCode('0x' + p1);
+    }));
+    
+    const url = `${window.location.origin}${window.location.pathname}?aluno=${encoded}`;
+    navigator.clipboard.writeText(url);
+    alert("Link do aluno copiado com sucesso!");
+}
+
+// 2. Atualize a lógica dentro da função init() para decodificar corretamente
+function init() {
+    // ... (mantenha a lógica de tema aqui) ...
+
+    renderLibrary();
+    loadFromStorage();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const alunoData = urlParams.get('aluno');
+    
+    if (alunoData) {
+        try {
+            // Decodifica o Base64 e reconverte os caracteres especiais
+            const decoded = decodeURIComponent(atob(alunoData).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            
+            workoutData = JSON.parse(decoded);
+            document.body.classList.add('is-student-mode');
+        } catch(e) { 
+            console.error("Erro ao carregar link: ", e); 
+        }
+    }
+    render();
+}
         }
 
         function clearAll() { if(confirm("Apagar todos os dados do treino atual?")) { localStorage.removeItem('jaque_pro_v2'); location.reload(); } }
