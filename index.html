@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>TREINO PROFESSORA JAQUE</title>
+    <title>TREINO PROFESSORA JAQUE - V2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -20,14 +20,22 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
         .category-content { display: none; }
         .category-content.active { display: block; }
+        @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-[#0b0f1a] text-slate-800 dark:text-slate-100 font-sans antialiased">
+<body class="bg-slate-100 dark:bg-[#0b0f1a] text-slate-800 dark:text-slate-100 font-sans antialiased transition-colors duration-300">
 
-    <header class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 no-print">
+    <header class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <h1 class="text-xl font-black italic uppercase tracking-tighter">PROFESSORA<span class="text-primary">JAQUE</span></h1>
-            <div id="studentDisplayHead" class="text-sm font-bold text-primary"></div>
+            
+            <div class="flex items-center gap-4">
+                <div id="studentDisplayHead" class="text-sm font-bold text-primary"></div>
+                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-primary/20 transition-all border border-slate-200 dark:border-slate-700" title="Alternar Tema">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
+                </button>
+            </div>
         </div>
     </header>
 
@@ -35,6 +43,7 @@
         
         <aside class="lg:col-span-4 space-y-4 admin-ui">
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
+                <label class="text-[10px] font-bold uppercase opacity-50 ml-2">Identificação do Aluno</label>
                 <input type="text" id="studentName" oninput="updateHeader()" placeholder="Nome do Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-primary mb-3 font-bold">
                 <select id="daySelector" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-primary font-bold text-sm">
                     <option value="segunda">Segunda-feira</option>
@@ -50,25 +59,31 @@
                 <h3 class="text-xs font-black uppercase mb-4 text-primary tracking-widest">Biblioteca de Exercícios</h3>
                 <input type="text" id="searchEx" placeholder="🔍 Buscar na biblioteca..." class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4 text-sm outline-none focus:ring-1 focus:ring-primary">
                 
-                <div id="accordionLib" class="space-y-2 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                    </div>
+                <div id="accordionLib" class="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
         </aside>
 
         <section class="lg:col-span-8 space-y-6">
             <div class="flex flex-wrap gap-2 no-print">
-                <button onclick="generateLink()" class="bg-primary text-white px-6 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-indigo-600 transition admin-ui">Copiar Link do Aluno 🔗</button>
-                <button onclick="window.print()" class="bg-slate-700 text-white px-6 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">PDF 📄</button>
+                <button onclick="generateLink()" class="bg-primary text-white px-6 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-indigo-600 transition admin-ui">Copiar Link 🔗</button>
+                <button onclick="window.print()" class="bg-slate-700 text-white px-6 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">Gerar PDF 📄</button>
                 <button onclick="clearAll()" class="bg-red-500/10 text-red-500 px-6 py-3 rounded-full font-black text-[10px] uppercase admin-ui">Limpar Tudo</button>
             </div>
 
             <div id="weekDisplay" class="space-y-10"></div>
+
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 mt-8">
+                <h3 class="text-xs font-black uppercase mb-4 text-primary tracking-widest">Observações Gerais do Treino</h3>
+                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none focus:ring-1 focus:ring-primary min-h-[100px]" placeholder="Dicas gerais, orientações de dieta ou avisos..."></textarea>
+            </div>
         </section>
     </main>
 
     <script>
-        // Simulação de base de dados massiva (Exemplificado com grupos, fácil expandir para 500+)
         const exerciseLibrary = {
+            "Cárdio (Bike e Transport)": ["Bicicleta Ergométrica (Moderado)", "Bicicleta Ergométrica (Intervalado/HIIT)", "Transport (Eliptico) - Resistência Alta", "Transport (Eliptico) - Velocidade", "Spinning Individual", "Air Bike (Assault Bike)"],
+            "Exercícios com Bola (Swiss Ball)": ["Abdominal na Bola", "Ponte na Bola", "Extensão Lombar na Bola", "Agachamento com Bola na Parede", "Prancha com Antebraço na Bola", "Passagem de Bola (Mãos para Pés)"],
+            "Equilíbrio e Estabilidade": ["Equilíbrio Unipodal (Chão)", "Equilíbrio no Bosu", "Aviãozinho (Propriocepção)", "Agachamento no Disco de Equilíbrio", "Prancha Lateral Dinâmica", "Passada em Superfície Instável"],
             "Peitorais": ["Supino Reto Barra", "Supino Inclinado Halter", "Supino Declinado", "Crucifixo Reto", "Crucifixo Inclinado", "Peck Deck", "Crossover Alto", "Crossover Baixo", "Crossover Médio", "Flexão de Braços", "Supino Articulado", "Dips (Paralelas)", "Pullover", "Supino Pegada Fechada", "Fly em Pé Polia"],
             "Costas": ["Puxada Aberta", "Puxada Triângulo", "Remada Curvada Barra", "Remada Unilateral (Serrote)", "Pulldown Corda", "Levantamento Terra", "Barra Fixa", "Remada Cavalinho", "Remada Baixa", "Remada Articulada", "Puxada Supinada", "Extensão Lombar", "Face Pull", "Remada Alta Polia"],
             "Quadríceps": ["Agachamento Livre", "Leg Press 45", "Cadeira Extensora", "Agachamento Hack", "Agachamento Búlgaro", "Afundo Halteres", "Passada (Walking Lunges)", "Sissy Squat", "Agachamento Frontal", "Leg Press Horizontal"],
@@ -76,19 +91,44 @@
             "Ombros": ["Desenvolvimento Halter", "Desenvolvimento Arnold", "Elevação Lateral", "Elevação Frontal", "Crucifixo Inverso", "Remada Alta Barra", "Encolhimento Halter", "Elevação Lateral Cabo", "Desenvolvimento Militar"],
             "Bíceps": ["Rosca Direta Barra", "Rosca Alternada", "Rosca Martelo", "Rosca Scott", "Rosca Concentrada", "Rosca Inclinada 45", "Rosca 21", "Rosca Polia Baixa", "Rosca Inversa"],
             "Tríceps": ["Tríceps Pulley V", "Tríceps Corda", "Tríceps Testa", "Tríceps Francês", "Mergulho Banco", "Tríceps Coice", "Supino Fechado", "Tríceps Unilateral Inverso"],
-            "Panturrilha e Core": ["Gêmeos em Pé", "Gêmeos Sentado", "Gêmeos no Leg Press", "Abdominal Supra", "Abdominal Infra", "Prancha Isométrica", "Russian Twist", "Abdominal Roda", "V-Sit"]
+            "Panturrilha e Core": ["Gêmeos em Pé", "Gêmeos Sentado", "Gêmeos no Leg Press", "Abdominal Supra", "Abdominal Infra", "Prancha Isométrica", "Russian Twist", "Abdominal Roda", "V-Sit"],
         };
 
-        let workoutData = { student: "", days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } };
+        let workoutData = { 
+            student: "", 
+            generalNotes: "",
+            days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
+        };
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme_jaque', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme_jaque', 'dark');
+            }
+        }
 
         function init() {
+            // Carregar tema preferido
+            const savedTheme = localStorage.getItem('theme_jaque');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+            }
+
             renderLibrary();
             loadFromStorage();
             
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('aluno')) {
-                workoutData = JSON.parse(atob(urlParams.get('aluno')));
-                document.body.classList.add('is-student-mode');
+                try {
+                    workoutData = JSON.parse(atob(urlParams.get('aluno')));
+                    document.body.classList.add('is-student-mode');
+                } catch(e) { console.error("Erro ao carregar link"); }
             }
             render();
         }
@@ -96,10 +136,9 @@
         function renderLibrary() {
             const container = document.getElementById('accordionLib');
             container.innerHTML = "";
-            
-            Object.keys(exerciseLibrary).forEach((cat, idx) => {
+            Object.keys(exerciseLibrary).forEach((cat) => {
                 const catDiv = document.createElement('div');
-                catDiv.className = "border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden";
+                catDiv.className = "border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden mb-2";
                 catDiv.innerHTML = `
                     <button onclick="toggleCat(this)" class="w-full p-4 text-left bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center hover:bg-primary/10 transition">
                         <span class="text-[10px] font-black uppercase tracking-widest">${cat}</span>
@@ -123,46 +162,32 @@
             btn.querySelector('span:last-child').innerText = content.classList.contains('active') ? '-' : '+';
         }
 
-        document.getElementById('searchEx').addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.category-content div').forEach(el => {
-                const match = el.innerText.toLowerCase().includes(term);
-                el.style.display = match ? 'block' : 'none';
-                if(term.length > 1 && match) el.parentElement.classList.add('active');
-            });
-        });
-
         function addEx(name) {
             const day = document.getElementById('daySelector').value;
-            workoutData.days[day].push({ n: name, r: "4x12", w: "", bi: false });
+            workoutData.days[day].push({ n: name, r: "3x12", w: "", obs: "", bi: false });
             save();
             render();
         }
 
-        function toggleBi(day, idx) {
-            workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi;
-            save(); render();
-        }
-
-        function removeEx(day, idx) {
-            workoutData.days[day].splice(idx, 1);
-            save(); render();
-        }
-
         function save() {
             workoutData.student = document.getElementById('studentName').value;
-            localStorage.setItem('rafael_pro_v3', JSON.stringify(workoutData));
+            workoutData.generalNotes = document.getElementById('generalNotes').value;
+            localStorage.setItem('jaque_pro_v2', JSON.stringify(workoutData));
         }
 
         function loadFromStorage() {
-            const saved = localStorage.getItem('rafael_pro_v3');
-            if(saved) workoutData = JSON.parse(saved);
+            const saved = localStorage.getItem('jaque_pro_v2');
+            if(saved) {
+                const parsed = JSON.parse(saved);
+                workoutData = {...workoutData, ...parsed};
+            }
         }
 
         function render() {
             const container = document.getElementById('weekDisplay');
             container.innerHTML = "";
-            document.getElementById('studentName').value = workoutData.student;
+            document.getElementById('studentName').value = workoutData.student || "";
+            document.getElementById('generalNotes').value = workoutData.generalNotes || "";
             document.getElementById('studentDisplayHead').innerText = workoutData.student ? `ALUNO: ${workoutData.student}` : "";
 
             const dayNames = {segunda: "Segunda-feira", terca: "Terça-feira", quarta: "Quarta-feira", quinta: "Quinta-feira", sexta: "Sexta-feira", sabado: "Sábado"};
@@ -171,7 +196,7 @@
                 const dayTrain = workoutData.days[dayKey];
                 if (dayTrain.length === 0 && document.body.classList.contains('is-student-mode')) return;
 
-                let html = `<div>
+                let html = `<div class="day-section">
                     <h2 class="text-2xl font-black uppercase italic text-primary mb-4 flex items-center gap-2">
                         <span class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs not-italic">${dayKey[0].toUpperCase()}</span>
                         ${dayNames[dayKey]}
@@ -180,22 +205,28 @@
 
                 dayTrain.forEach((ex, idx) => {
                     html += `
-                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-5 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-between transition-all">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-sm uppercase tracking-tight">${ex.n}</h4>
-                            <div class="flex gap-2 mt-3 no-print">
-                                <button onclick="toggleBi('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full ${ex.bi ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800'} transition">CONJUGADO</button>
-                                <button onclick="removeEx('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full bg-red-500/10 text-red-500">REMOVER</button>
+                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-5 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm uppercase tracking-tight">${ex.n}</h4>
+                                <input type="text" value="${ex.obs || ''}" placeholder="Adicionar observação específica..." 
+                                    oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()" 
+                                    class="w-full mt-2 bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 text-[10px] outline-none focus:border-primary italic">
+                                
+                                <div class="flex gap-2 mt-3 no-print">
+                                    <button onclick="toggleBi('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full ${ex.bi ? 'bg-primary text-white' : 'bg-slate-100 dark:bg-slate-800'} transition">CONJUGADO</button>
+                                    <button onclick="removeEx('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full bg-red-500/10 text-red-500">REMOVER</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="flex flex-col items-center">
-                                <span class="text-[7px] uppercase font-black opacity-40 mb-1">Repetições</span>
-                                <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-16 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none focus:ring-1 focus:ring-primary">
-                            </div>
-                            <div class="flex flex-col items-center">
-                                <span class="text-[7px] uppercase font-black opacity-40 mb-1">Carga</span>
-                                <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" placeholder="Kg" class="w-14 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none focus:ring-1 focus:ring-primary">
+                            <div class="flex gap-4 ml-4">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-[7px] uppercase font-black opacity-40 mb-1">Séries/Rep</span>
+                                    <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-16 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none focus:ring-1 focus:ring-primary">
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <span class="text-[7px] uppercase font-black opacity-40 mb-1">Carga</span>
+                                    <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" placeholder="Kg" class="w-14 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none focus:ring-1 focus:ring-primary">
+                                </div>
                             </div>
                         </div>
                     </div>`;
@@ -205,16 +236,28 @@
             });
         }
 
+        function toggleBi(day, idx) { workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi; save(); render(); }
+        function removeEx(day, idx) { if(confirm("Remover exercício?")) { workoutData.days[day].splice(idx, 1); save(); render(); } }
+        function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
+        
         function generateLink() {
             save();
-            const encoded = btoa(JSON.stringify(workoutData));
+            const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(workoutData))));
             const url = `${window.location.origin}${window.location.pathname}?aluno=${encoded}`;
             navigator.clipboard.writeText(url);
-            alert("Link do aluno copiado!");
+            alert("Link do aluno copiado com sucesso!");
         }
 
-        function clearAll() { if(confirm("Apagar tudo?")) { localStorage.removeItem('rafael_pro_v3'); location.reload(); } }
-        function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
+        function clearAll() { if(confirm("Apagar todos os dados do treino atual?")) { localStorage.removeItem('jaque_pro_v2'); location.reload(); } }
+
+        document.getElementById('searchEx').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.category-content div').forEach(el => {
+                const match = el.innerText.toLowerCase().includes(term);
+                el.style.display = match ? 'block' : 'none';
+                if(term.length > 1 && match) el.parentElement.classList.add('active');
+            });
+        });
 
         init();
     </script>
