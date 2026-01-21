@@ -1,95 +1,283 @@
 <!doctype html>
 <html lang="pt-BR" class="dark">
 <head>
-    <link rel="icon" href="https://zeus-rr.github.io/treino/icon.png">
     <meta charset="utf-8" />
+    <link rel="icon" href="https://zeus-rr.github.io/treino/icon.png">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title id="pageTitle">SISTEMA DE TREINO</title>
+    <title id="pageTitle">SISTEMA DE TREINO - PERSONAL JAQUE</title>
+    <meta name="description" content="Sistema de treino personalizado para alunos - Personal Jaque">
+    <meta name="theme-color" content="#FF1493">
+
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class', 
-            theme: { 
-                extend: { 
-                    colors: { 
-                        'pink-hot': 'var(--main-color, #FF1493)', 
-                        'bg-dark': '#0b0f1a' 
-                    } 
-                } 
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'pink-hot': 'var(--main-color, #FF1493)',
+                        'bg-dark': '#0b0f1a'
+                    }
+                }
+            }
+        };
+    </script>
+
+    <style>
+        :root {
+            --main-color: #FF1493;
+        }
+
+        .is-conjugated {
+            margin-bottom: -1rem !important;
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-bottom: 2px dashed var(--main-color) !important;
+            z-index: 10;
+        }
+
+        .is-conjugated + .workout-item {
+            border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+        }
+
+        .is-student-mode .admin-ui,
+        .is-student-mode .edit-btn,
+        .is-student-mode .drag-handle {
+            display: none !important;
+        }
+
+        .pink-bold {
+            color: var(--main-color) !important;
+            font-weight: 900 !important;
+        }
+
+        .btn-whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: 2px solid white;
+        }
+
+        .btn-whatsapp-float img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: white;
+        }
+
+        .btn-whatsapp-float:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .category-content {
+            display: none;
+        }
+
+        .category-content.active {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-    </script>
-    <style>
-        :root { --main-color: #FF1493; }
-        .is-conjugated { margin-bottom: -1rem !important; border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; border-bottom: 2px dashed var(--main-color) !important; z-index: 10; }
-        .is-conjugated + .workout-item { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
-        .is-student-mode .admin-ui, .is-student-mode .edit-btn, .is-student-mode .drag-handle { display: none !important; }
-        .pink-bold { color: var(--main-color) !important; font-weight: 900 !important; }
-        
-        .btn-whatsapp-float { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 8px 16px; border-radius: 50px; font-weight: 800; text-transform: uppercase; font-size: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; z-index: 1000; transition: all 0.3s ease; text-decoration: none; border: 2px solid white; }
-        .btn-whatsapp-float img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: white; }
-        
-        .category-content { display: none; }
-        .category-content.active { display: block; animation: slideDown 0.3s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .exercise-added { animation: added-pulse 0.6s ease-out; border-color: #22c55e !important; }
-        @keyframes added-pulse { 0% { background-color: transparent; } 50% { background-color: rgba(34, 197, 94, 0.2); transform: scale(1.02); } 100% { background-color: transparent; } }
-        
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--main-color); border-radius: 10px; }
-        .drag-handle { cursor: grab; padding: 0 10px; color: #64748b; font-size: 1.2rem; }
-        .workout-item.dragging { opacity: 0.4; border: 2px dashed var(--main-color); }
+
+        .exercise-added {
+            animation: added-pulse 0.6s ease-out;
+            border-color: #22c55e !important;
+        }
+
+        @keyframes added-pulse {
+            0% {
+                background-color: transparent;
+            }
+            50% {
+                background-color: rgba(34, 197, 94, 0.2);
+                transform: scale(1.02);
+            }
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 10px;
+        }
+
+        .drag-handle {
+            cursor: grab;
+            padding: 0 10px;
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+
+        .workout-item.dragging {
+            opacity: 0.4;
+            border: 2px dashed var(--main-color);
+        }
+
+        .search-active {
+            border-color: var(--main-color) !important;
+            box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.1) !important;
+        }
     </style>
 </head>
 <body class="bg-slate-100 dark:bg-[#0b0f1a] text-slate-800 dark:text-slate-100 font-sans min-h-screen">
 
-    <a id="waFloat" href="#" target="_blank" class="btn-whatsapp-float no-print">
-        <img id="waPhoto" src="https://zeus-rr.github.io/treino/icon.png">
+    <!-- BOTÃO FIXO WHATSAPP -->
+    <a id="waFloat" href="#" target="_blank" class="btn-whatsapp-float no-print" aria-label="Falar com o professor pelo WhatsApp">
+        <img id="waPhoto" src="https://zeus-rr.github.io/treino/icon.png" alt="Foto do professor">
         <span id="waText">Falar com Professor</span>
     </a>
 
+    <!-- HEADER -->
     <header class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img id="displayImgProf" src="https://zeus-rr.github.io/treino/icon.png" class="w-10 h-10 rounded-full border-2 border-pink-hot object-cover shadow-lg">
-                <h1 id="brandName" class="text-xl italic uppercase tracking-tighter pink-bold">PERSONAL _ JAQUE</h1>
+                <img
+                    id="displayImgProf"
+                    src="https://zeus-rr.github.io/treino/icon.png"
+                    class="w-10 h-10 rounded-full border-2 border-pink-hot object-cover shadow-lg"
+                    alt="Foto do professor"
+                >
+                <h1 id="brandName" class="text-xl italic uppercase tracking-tighter pink-bold">
+                    PERSONAL _ JAQUE
+                </h1>
             </div>
+
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2">
-                    <img id="displayImgAluno" src="" class="w-9 h-9 rounded-full object-cover hidden border-2 border-slate-300 shadow-sm">
+                    <img
+                        id="displayImgAluno"
+                        src=""
+                        class="w-9 h-9 rounded-full object-cover hidden border-2 border-slate-300 shadow-sm"
+                        alt="Foto do aluno"
+                    >
                     <div id="studentDisplayHead" class="text-sm font-bold pink-bold hidden sm:block"></div>
                 </div>
-                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border">🌓</button>
+
+                <button
+                    type="button"
+                    onclick="toggleTheme()"
+                    class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+                    aria-label="Alternar tema claro/escuro"
+                >
+                    🌓
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- MAIN -->
     <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
-        <aside class="lg:col-span-4 space-y-4 admin-ui">
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-pink-hot/20">
-                <h3 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">Painel do Professor</h3>
+        <!-- PAINEL DO PROFESSOR -->
+        <aside class="lg:col-span-4 space-y-4 admin-ui" aria-label="Painel do Professor">
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-pink-hot/20">
+                <h2 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">
+                    Painel do Professor
+                </h2>
+
                 <div class="space-y-3">
-                    <input type="text" id="confName" oninput="updateConfigs()" placeholder="Nome da Marca" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none border-b-2 border-pink-hot">
-                    <input type="text" id="confPhone" oninput="updateConfigs()" placeholder="WhatsApp (Ex: 55159...)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none">
-                    
+                    <input
+                        type="text"
+                        id="confName"
+                        oninput="updateConfigs()"
+                        placeholder="Nome da Marca"
+                        class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none border-b-2 border-pink-hot focus:ring-2 focus:ring-pink-hot/50"
+                    >
+
+                    <input
+                        type="text"
+                        id="confPhone"
+                        oninput="updateConfigs()"
+                        placeholder="WhatsApp (Ex: 55159...)"
+                        class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none focus:ring-2 focus:ring-pink-hot/50"
+                    >
+
                     <div class="space-y-2 py-2">
-                        <label class="text-[9px] font-bold uppercase opacity-60 ml-1">URLs das Imagens</label>
-                        <input type="url" id="urlProf" oninput="handleURLImage(this, 'prof')" placeholder="Link Foto Professor (URL)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
-                        <input type="url" id="urlAluno" oninput="handleURLImage(this, 'student')" placeholder="Link Foto Aluno (URL)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
+                        <label class="text-[9px] font-bold uppercase opacity-60 ml-1">
+                            URLs das Imagens
+                        </label>
+
+                        <input
+                            type="url"
+                            id="urlProf"
+                            oninput="handleURLImage(this, 'prof')"
+                            placeholder="Link Foto Professor (URL)"
+                            class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30 focus:ring-1 focus:ring-pink-hot/40"
+                        >
+
+                        <input
+                            type="url"
+                            id="urlAluno"
+                            oninput="handleURLImage(this, 'student')"
+                            placeholder="Link Foto Aluno (URL)"
+                            class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30 focus:ring-1 focus:ring-pink-hot/40"
+                        >
                     </div>
 
                     <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
-                        <label class="text-[10px] font-bold uppercase opacity-50">Cor do Tema</label>
-                        <input type="color" id="confColor" oninput="updateConfigs()" class="w-10 h-6 bg-transparent cursor-pointer">
+                        <label for="confColor" class="text-[10px] font-bold uppercase opacity-50">
+                            Cor do Tema
+                        </label>
+                        <input
+                            type="color"
+                            id="confColor"
+                            oninput="updateConfigs()"
+                            class="w-10 h-6 bg-transparent cursor-pointer rounded"
+                        >
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
-                <label class="text-[10px] font-bold uppercase opacity-50 ml-2">Dados do Aluno</label>
-                <input type="text" id="studentName" oninput="updateHeader()" placeholder="Nome do Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3 font-bold outline-none focus:ring-2 focus:ring-pink-hot">
-                <select id="daySelector" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold text-sm outline-none">
+            <!-- DADOS DO ALUNO -->
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
+                <label class="text-[10px] font-bold uppercase opacity-50 ml-2">
+                    Dados do Aluno
+                </label>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    oninput="updateHeader()"
+                    placeholder="Nome do Aluno"
+                    class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3 font-bold outline-none focus:ring-2 focus:ring-pink-hot"
+                >
+
+                <select
+                    id="daySelector"
+                    class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold text-sm outline-none focus:ring-2 focus:ring-pink-hot"
+                >
                     <option value="segunda">Segunda-feira</option>
                     <option value="terca">Terça-feira</option>
                     <option value="quarta">Quarta-feira</option>
@@ -97,103 +285,319 @@
                     <option value="sexta">Sexta-feira</option>
                     <option value="sabado">Sábado</option>
                 </select>
-            </div>
+            </section>
 
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
-                <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Biblioteca Completa</h3>
-                <input type="text" id="searchEx" placeholder="Buscar exercício..." class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4 text-sm outline-none">
-                <div id="accordionLib" class="space-y-2 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar"></div>
-            </div>
+            <!-- BIBLIOTECA MELHORADA -->
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-xs font-black uppercase text-pink-hot tracking-widest">
+                            Biblioteca Completa
+                        </h2>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">
+                            Clique em uma categoria e depois em um exercício para adicioná-lo ao treino do dia selecionado.
+                        </p>
+                    </div>
+
+                    <span class="hidden lg:inline-flex items-center gap-1 text-[10px] uppercase font-bold text-slate-400">
+                        <span class="w-2 h-2 rounded-full bg-pink-hot"></span>
+                        Ativo
+                    </span>
+                </div>
+
+                <div class="relative mb-4">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">🔎</span>
+                    <input
+                        type="text"
+                        id="searchEx"
+                        placeholder="Buscar exercício por nome..."
+                        class="w-full bg-slate-100 dark:bg-slate-800 pl-8 pr-3 py-3 rounded-xl text-sm outline-none border border-transparent focus:border-pink-hot/60 focus:ring-1 focus:ring-pink-hot/40 transition"
+                    >
+                </div>
+
+                <div
+                    id="accordionLib"
+                    class="space-y-2 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar"
+                    aria-label="Lista de exercícios por categoria"
+                ></div>
+            </section>
         </aside>
 
+        <!-- TREINO / DIAS -->
         <section class="lg:col-span-8 space-y-6">
+            <!-- AÇÕES -->
             <div class="flex flex-wrap gap-2 no-print">
-                <button onclick="sendWhatsApp()" class="bg-green-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Enviar p/ Aluno 📱</button>
-                <button id="btnCopy" onclick="generateLink()" class="bg-pink-hot text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Copiar Link 🔗</button>
-                <button onclick="shortenLinkWithName()" class="bg-blue-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Encurtar Link ✂️</button>
-                <button onclick="window.print()" class="bg-slate-700 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">PDF 📄</button>
-                <button onclick="clearAll()" class="bg-red-500/10 text-red-500 px-5 py-3 rounded-full font-black text-[10px] uppercase admin-ui">Limpar Tudo</button>
+                <button
+                    type="button"
+                    onclick="sendWhatsApp()"
+                    class="bg-green-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-green-700 transition admin-ui"
+                >
+                    Enviar p/ Aluno 📱
+                </button>
+
+                <button
+                    type="button"
+                    id="btnCopy"
+                    onclick="generateLink()"
+                    class="bg-pink-hot text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-pink-600 transition admin-ui"
+                >
+                    Copiar Link 🔗
+                </button>
+
+                <button
+                    type="button"
+                    onclick="shortenLinkWithName()"
+                    class="bg-blue-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-blue-700 transition admin-ui"
+                >
+                    Encurtar Link ✂️
+                </button>
+
+                <button
+                    type="button"
+                    onclick="window.print()"
+                    class="bg-slate-700 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-slate-800 transition"
+                >
+                    PDF 📄
+                </button>
+
+                <button
+                    type="button"
+                    onclick="clearAll()"
+                    class="bg-red-500/10 text-red-500 px-5 py-3 rounded-full font-black text-[10px] uppercase hover:bg-red-500/20 transition admin-ui"
+                >
+                    Limpar Tudo
+                </button>
             </div>
 
+            <!-- TREINO POR SEMANA -->
             <div id="weekDisplay" class="space-y-10"></div>
 
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800">
-                <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Observações Gerais</h3>
-                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none min-h-[100px]" placeholder="Dicas de cardio, descanso ou avisos..."></textarea>
-            </div>
+            <!-- OBSERVAÇÕES -->
+            <section class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800">
+                <h2 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">
+                    Observações Gerais
+                </h2>
+
+                <textarea
+                    id="generalNotes"
+                    oninput="save()"
+                    class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none min-h-[100px] resize-vertical focus:ring-2 focus:ring-pink-hot"
+                    placeholder="Dicas de cardio, descanso, nutrição ou avisos importantes..."
+                ></textarea>
+            </section>
         </section>
     </main>
 
     <script>
         const exerciseLibrary = {
-            "Peito (Variantes)": ["Supino Reto Barra", "Supino Reto Halteres", "Supino Inclinado Barra", "Supino Inclinado Halteres", "Supino Declinado", "Crucifixo Reto", "Crucifixo Inclinado", "Peck Deck (Voador)", "Crossover Cabo Alto", "Crossover Cabo Médio", "Crossover Cabo Baixo", "Flexão de Braços Solo", "Supino Máquina Convergente", "Fly no Banco 30º", "Pullover Halter", "Dips (Paralelas) Peito"],
-            "Costas (Dorsal/Lombar)": ["Puxada Frente Aberta", "Puxada Triângulo", "Puxada Supinada", "Remada Curvada Barra", "Remada Curvada Halteres", "Remada Unilateral (Serrote)", "Remada Baixa Polia", "Remada Cavalinho", "Pulldown Corda", "Barra Fixa Aberta", "Levantamento Terra Clássico", "Extensão Lombar", "Remada Máquina Articulada", "Face Pull"],
-            "Pernas (Quadríceps)": ["Agachamento Livre Barra", "Agachamento Hack", "Leg Press 45º", "Leg Press Horizontal", "Cadeira Extensora", "Agachamento Búlgaro", "Afundo com Halteres", "Passada (Walking Lunges)", "Agachamento Sumô", "Sissy Squat"],
-            "Pernas (Posterior/Glúteo)": ["Stiff Barra", "Stiff Halteres", "Mesa Flexora", "Cadeira Flexora", "Elevação Pélvica Barra", "Cadeira Abdutora", "Cadeira Adutora", "Glúteo no Cabo (Coice)", "Levantamento Terra Romeno (RDL)", "Abdução com Caneleiras"],
-            "Ombros (Deltoides)": ["Desenvolvimento Militar", "Desenvolvimento Halteres", "Desenvolvimento Arnold", "Elevação Lateral Halteres", "Elevação Lateral Cabo", "Elevação Frontal Barra", "Crucifixo Inverso Halter", "Encolhimento de Ombros"],
-            "Braços (Bíceps)": ["Rosca Direta Barra W", "Rosca Alternada", "Rosca Martelo", "Rosca Scott Barra", "Rosca Concentrada", "Rosca Inclinada 45º", "Rosca Cross Baixo", "Rosca Inversa Barra"],
-            "Braços (Tríceps)": ["Tríceps Pulley V", "Tríceps Corda", "Tríceps Testa Barra W", "Tríceps Francês Halter", "Mergulho no Banco", "Dips (Paralelas) Tríceps", "Tríceps Coice Halter", "Supino Pegada Fechada"],
-            "Panturrilha": ["Gêmeos em Pé", "Gêmeos Sentado", "Gêmeos no Leg Press"],
-            "Core e Abs": ["Abdominal Supra Solo", "Abdominal Infra Solo", "Prancha Isométrica", "Prancha Lateral", "Abdominal Roda", "Abdominal na Polia", "V-Sit (Canivete)", "Vácuo Abdominal"],
-            "Cárdio e Funcional": ["Corrida Esteira", "Bicicleta Ergométrica", "Corda Naval", "Elíptico", "Pular Corda", "Burpees", "Polichinelos", "Mountain Climbers", "Swing Kettlebell"]
+            "Peito (Variantes)": [
+                "Supino Reto Barra",
+                "Supino Reto Halteres",
+                "Supino Inclinado Barra",
+                "Supino Inclinado Halteres",
+                "Supino Declinado",
+                "Crucifixo Reto",
+                "Crucifixo Inclinado",
+                "Peck Deck (Voador)",
+                "Crossover Cabo Alto",
+                "Crossover Cabo Médio",
+                "Crossover Cabo Baixo",
+                "Flexão de Braços Solo",
+                "Supino Máquina Convergente",
+                "Fly no Banco 30º",
+                "Pullover Halter",
+                "Dips (Paralelas) Peito"
+            ],
+            "Costas (Dorsal/Lombar)": [
+                "Puxada Frente Aberta",
+                "Puxada Triângulo",
+                "Puxada Supinada",
+                "Remada Curvada Barra",
+                "Remada Curvada Halteres",
+                "Remada Unilateral (Serrote)",
+                "Remada Baixa Polia",
+                "Remada Cavalinho",
+                "Pulldown Corda",
+                "Barra Fixa Aberta",
+                "Levantamento Terra Clássico",
+                "Extensão Lombar",
+                "Remada Máquina Articulada",
+                "Face Pull"
+            ],
+            "Pernas (Quadríceps)": [
+                "Agachamento Livre Barra",
+                "Agachamento Hack",
+                "Leg Press 45º",
+                "Leg Press Horizontal",
+                "Cadeira Extensora",
+                "Agachamento Búlgaro",
+                "Afundo com Halteres",
+                "Passada (Walking Lunges)",
+                "Agachamento Sumô",
+                "Sissy Squat"
+            ],
+            "Pernas (Posterior/Glúteo)": [
+                "Stiff Barra",
+                "Stiff Halteres",
+                "Mesa Flexora",
+                "Cadeira Flexora",
+                "Elevação Pélvica Barra",
+                "Cadeira Abdutora",
+                "Cadeira Adutora",
+                "Glúteo no Cabo (Coice)",
+                "Levantamento Terra Romeno (RDL)",
+                "Abdução com Caneleiras"
+            ],
+            "Ombros (Deltoides)": [
+                "Desenvolvimento Militar",
+                "Desenvolvimento Halteres",
+                "Desenvolvimento Arnold",
+                "Elevação Lateral Halteres",
+                "Elevação Lateral Cabo",
+                "Elevação Frontal Barra",
+                "Crucifixo Inverso Halter",
+                "Encolhimento de Ombros"
+            ],
+            "Braços (Bíceps)": [
+                "Rosca Direta Barra W",
+                "Rosca Alternada",
+                "Rosca Martelo",
+                "Rosca Scott Barra",
+                "Rosca Concentrada",
+                "Rosca Inclinada 45º",
+                "Rosca Cross Baixo",
+                "Rosca Inversa Barra"
+            ],
+            "Braços (Tríceps)": [
+                "Tríceps Pulley V",
+                "Tríceps Corda",
+                "Tríceps Testa Barra W",
+                "Tríceps Francês Halter",
+                "Mergulho no Banco",
+                "Dips (Paralelas) Tríceps",
+                "Tríceps Coice Halter",
+                "Supino Pegada Fechada"
+            ],
+            "Panturrilha": [
+                "Gêmeos em Pé",
+                "Gêmeos Sentado",
+                "Gêmeos no Leg Press"
+            ],
+            "Core e Abs": [
+                "Abdominal Supra Solo",
+                "Abdominal Infra Solo",
+                "Prancha Isométrica",
+                "Prancha Lateral",
+                "Abdominal Roda",
+                "Abdominal na Polia",
+                "V-Sit (Canivete)",
+                "Vácuo Abdominal"
+            ],
+            "Cárdio e Funcional": [
+                "Corrida Esteira",
+                "Bicicleta Ergométrica",
+                "Corda Naval",
+                "Elíptico",
+                "Pular Corda",
+                "Burpees",
+                "Polichinelos",
+                "Mountain Climbers",
+                "Swing Kettlebell"
+            ]
         };
 
-        let workoutData = { 
-            student: "", generalNotes: "", photoProf: "https://zeus-rr.github.io/treino/icon.png", photoStudent: "",
-            profName: "PERSONAL _ JAQUE", profPhone: "5515981776856", themeColor: "#FF1493",
-            days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
+        let workoutData = {
+            student: "",
+            generalNotes: "",
+            photoProf: "https://zeus-rr.github.io/treino/icon.png",
+            photoStudent: "",
+            profName: "PERSONAL _ JAQUE",
+            profPhone: "5515981776856",
+            themeColor: "#FF1493",
+            days: {
+                segunda: [],
+                terca: [],
+                quarta: [],
+                quinta: [],
+                sexta: [],
+                sabado: []
+            }
         };
 
         function init() {
             renderLibrary();
+
             const urlParams = new URLSearchParams(window.location.search);
-            const alunoData = urlParams.get('aluno');
+            const alunoData = urlParams.get("aluno");
+
             if (alunoData) {
                 try {
-                    const decoded = decodeURIComponent(atob(alunoData).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+                    const decoded = decodeURIComponent(
+                        atob(alunoData)
+                            .split("")
+                            .map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                            .join("")
+                    );
                     workoutData = JSON.parse(decoded);
-                    document.body.classList.add('is-student-mode');
-                } catch(e) { loadFromStorage(); }
-            } else { loadFromStorage(); }
+                    document.body.classList.add("is-student-mode");
+                } catch (e) {
+                    loadFromStorage();
+                }
+            } else {
+                loadFromStorage();
+            }
+
             applyConfigs();
             render();
         }
 
         function applyConfigs() {
-            document.documentElement.style.setProperty('--main-color', workoutData.themeColor);
-            document.getElementById('brandName').innerText = workoutData.profName;
-            document.getElementById('confName').value = workoutData.profName;
-            document.getElementById('confPhone').value = workoutData.profPhone;
-            document.getElementById('confColor').value = workoutData.themeColor;
-            
+            document.documentElement.style.setProperty("--main-color", workoutData.themeColor);
+
+            document.getElementById("brandName").innerText = workoutData.profName;
+            document.getElementById("confName").value = workoutData.profName;
+            document.getElementById("confPhone").value = workoutData.profPhone;
+            document.getElementById("confColor").value = workoutData.themeColor;
+
             // Sincroniza os inputs de URL
-            document.getElementById('urlProf').value = workoutData.photoProf || "";
-            document.getElementById('urlAluno').value = workoutData.photoStudent || "";
-            
-            const firstName = workoutData.profName.split(' ')[0];
-            document.getElementById('waText').innerText = `Falar com ${firstName}`;
-            document.getElementById('waFloat').href = `https://api.whatsapp.com/send?phone=${workoutData.profPhone}&text=Oi ${firstName}, tenho uma dúvida!`;
-            
-            if(workoutData.photoProf) {
-                document.getElementById('displayImgProf').src = workoutData.photoProf;
-                document.getElementById('waPhoto').src = workoutData.photoProf;
+            document.getElementById("urlProf").value = workoutData.photoProf || "";
+            document.getElementById("urlAluno").value = workoutData.photoStudent || "";
+
+            const firstName = workoutData.profName.split(" ")[0];
+
+            document.getElementById("waText").innerText = `Falar com ${firstName}`;
+            document.getElementById("waFloat").href =
+                `https://api.whatsapp.com/send?phone=${workoutData.profPhone}&text=Oi ${firstName}, tenho uma dúvida!`;
+
+            if (workoutData.photoProf) {
+                document.getElementById("displayImgProf").src = workoutData.photoProf;
+                document.getElementById("waPhoto").src = workoutData.photoProf;
             } else {
-                document.getElementById('displayImgProf').src = "https://zeus-rr.github.io/treino/icon.png";
+                document.getElementById("displayImgProf").src = "https://zeus-rr.github.io/treino/icon.png";
             }
         }
 
         function updateConfigs() {
-            workoutData.profName = document.getElementById('confName').value;
-            workoutData.profPhone = document.getElementById('confPhone').value;
-            workoutData.themeColor = document.getElementById('confColor').value;
-            applyConfigs(); save();
+            workoutData.profName = document.getElementById("confName").value;
+            workoutData.profPhone = document.getElementById("confPhone").value;
+            workoutData.themeColor = document.getElementById("confColor").value;
+
+            applyConfigs();
+            save();
         }
 
         function handleURLImage(input, type) {
             const url = input.value.trim();
-            if (type === 'prof') workoutData.photoProf = url;
-            else workoutData.photoStudent = url;
-            applyConfigs(); save(); render();
+
+            if (type === "prof") {
+                workoutData.photoProf = url;
+            } else {
+                workoutData.photoStudent = url;
+            }
+
+            applyConfigs();
+            save();
+            render();
         }
 
         function playClickSound() {
@@ -201,125 +605,285 @@
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
                 const g = ctx.createGain();
-                osc.connect(g); g.connect(ctx.destination);
+
+                osc.connect(g);
+                g.connect(ctx.destination);
+
                 osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRamp
                 osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+
                 g.gain.setValueAtTime(0.1, ctx.currentTime);
                 g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-                osc.start(); osc.stop(ctx.currentTime + 0.1);
-            } catch(e) {}
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch (e) {
+                // silencioso
+            }
         }
 
         function addEx(name, el) {
             playClickSound();
-            const day = document.getElementById('daySelector').value;
-            workoutData.days[day].push({ n: name, r: "3x12", w: "", obs: "", bi: false });
-            el.classList.add('exercise-added');
-            setTimeout(() => el.classList.remove('exercise-added'), 600);
-            save(); render();
+
+            const day = document.getElementById("daySelector").value;
+
+            workoutData.days[day].push({
+                n: name,
+                r: "3x12",
+                w: "",
+                obs: "",
+                bi: false
+            });
+
+            el.classList.add("exercise-added");
+            setTimeout(() => el.classList.remove("exercise-added"), 600);
+
+            save();
+            render();
         }
 
         function render() {
-            const container = document.getElementById('weekDisplay');
+            const container = document.getElementById("weekDisplay");
             container.innerHTML = "";
-            const isStudent = document.body.classList.contains('is-student-mode');
-            
-            if(!isStudent) {
-                document.getElementById('studentName').value = workoutData.student || "";
-                document.getElementById('generalNotes').value = workoutData.generalNotes || "";
+
+            const isStudent = document.body.classList.contains("is-student-mode");
+
+            if (!isStudent) {
+                document.getElementById("studentName").value = workoutData.student || "";
+                document.getElementById("generalNotes").value = workoutData.generalNotes || "";
             }
-            
-            const studentImg = document.getElementById('displayImgAluno');
+
+            const studentImg = document.getElementById("displayImgAluno");
+
             if (workoutData.photoStudent) {
                 studentImg.src = workoutData.photoStudent;
-                studentImg.classList.remove('hidden');
+                studentImg.classList.remove("hidden");
             } else {
-                studentImg.classList.add('hidden');
+                studentImg.classList.add("hidden");
             }
-            document.getElementById('studentDisplayHead').innerText = workoutData.student ? `ALUNO: ${workoutData.student}` : "";
+
+            document.getElementById("studentDisplayHead").innerText =
+                workoutData.student ? `ALUNO: ${workoutData.student}` : "";
 
             Object.keys(workoutData.days).forEach(dayKey => {
                 if (workoutData.days[dayKey].length === 0) return;
-                let html = `<div class="day-section" data-day="${dayKey}">
-                    <h2 class="text-xl font-black uppercase italic pink-bold mb-4 flex items-center justify-between">
-                        ${dayKey}
-                        <button onclick="duplicateDay('${dayKey}')" class="admin-ui text-[10px] bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-full not-italic">DUPLICAR</button>
-                    </h2>
-                    <div class="grid gap-3">`;
+
+                let html = `
+                    <div class="day-section" data-day="${dayKey}">
+                        <h2 class="text-xl font-black uppercase italic pink-bold mb-4 flex items-center justify-between">
+                            ${dayKey}
+                            <button
+                                type="button"
+                                onclick="duplicateDay('${dayKey}')"
+                                class="admin-ui text-[10px] bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-full not-italic"
+                            >
+                                DUPLICAR
+                            </button>
+                        </h2>
+                        <div class="grid gap-3">
+                `;
+
                 workoutData.days[dayKey].forEach((ex, idx) => {
                     html += `
-                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center"
-                         draggable="${!isStudent}" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" data-index="${idx}">
-                        <div class="drag-handle admin-ui">☰</div>
-                        <div class="flex-1 flex items-center justify-between">
-                            <div class="flex-1">
-                                <h4 class="font-bold text-xs uppercase">${ex.n}</h4>
-                                <input type="text" value="${ex.obs || ''}" oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()" class="w-full bg-transparent border-b border-dashed text-[10px] outline-none mt-1" placeholder="Obs..." ${isStudent ? 'disabled' : ''}>
-                                <div class="flex gap-2 mt-2 no-print admin-ui">
-                                    <button onclick="toggleBi('${dayKey}', ${idx})" class="text-[8px] font-bold px-2 py-1 rounded-full ${ex.bi ? 'bg-pink-hot text-white' : 'bg-slate-100 dark:bg-slate-800'}">CONJUGAR</button>
-                                    <button onclick="removeEx('${dayKey}', ${idx})" class="text-[8px] font-bold px-2 py-1 bg-red-500/10 text-red-500 rounded-full">REMOVER</button>
+                        <div
+                            class="workout-item ${ex.bi ? "is-conjugated" : ""} bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center"
+                            draggable="${!isStudent}"
+                            ondragstart="handleDragStart(event)"
+                            ondragover="handleDragOver(event)"
+                            ondrop="handleDrop(event)"
+                            data-index="${idx}"
+                        >
+                            <div class="drag-handle admin-ui">☰</div>
+
+                            <div class="flex-1 flex items-center justify-between">
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-xs uppercase">
+                                        ${ex.n}
+                                    </h3>
+
+                                    <input
+                                        type="text"
+                                        value="${ex.obs || ""}"
+                                        oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()"
+                                        class="w-full bg-transparent border-b border-dashed text-[10px] outline-none mt-1"
+                                        placeholder="Obs..."
+                                        ${isStudent ? "disabled" : ""}
+                                    >
+
+                                    <div class="flex gap-2 mt-2 no-print admin-ui">
+                                        <button
+                                            type="button"
+                                            onclick="toggleBi('${dayKey}', ${idx})"
+                                            class="text-[8px] font-bold px-2 py-1 rounded-full ${
+                                                ex.bi
+                                                    ? "bg-pink-hot text-white"
+                                                    : "bg-slate-100 dark:bg-slate-800"
+                                            }"
+                                        >
+                                            CONJUGAR
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onclick="removeEx('${dayKey}', ${idx})"
+                                            class="text-[8px] font-bold px-2 py-1 bg-red-500/10 text-red-500 rounded-full"
+                                        >
+                                            REMOVER
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-2 ml-4">
+                                    <input
+                                        type="text"
+                                        value="${ex.r}"
+                                        oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()"
+                                        class="w-12 bg-slate-100 dark:bg-slate-800 text-center text-[10px] font-bold p-2 rounded-lg"
+                                        ${isStudent ? "disabled" : ""}
+                                    >
+                                    <input
+                                        type="text"
+                                        value="${ex.w}"
+                                        oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()"
+                                        class="w-10 bg-slate-100 dark:bg-slate-800 text-center text-[10px] font-bold p-2 rounded-lg"
+                                        ${isStudent ? "disabled" : ""}
+                                    >
                                 </div>
                             </div>
-                            <div class="flex gap-2 ml-4">
-                                <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-12 bg-slate-100 dark:bg-slate-800 text-center text-[10px] font-bold p-2 rounded-lg" ${isStudent ? 'disabled' : ''}>
-                                <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" class="w-10 bg-slate-100 dark:bg-slate-800 text-center text-[10px] font-bold p-2 rounded-lg" ${isStudent ? 'disabled' : ''}>
-                            </div>
                         </div>
-                    </div>`;
+                    `;
                 });
-                container.innerHTML += html + `</div></div>`;
+
+                container.innerHTML += `${html}</div></div>`;
             });
         }
 
         function renderLibrary() {
-            const container = document.getElementById('accordionLib');
+            const container = document.getElementById("accordionLib");
             container.innerHTML = "";
+
             Object.keys(exerciseLibrary).forEach(cat => {
                 container.innerHTML += `
                     <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden mb-2">
-                        <button onclick="this.nextElementSibling.classList.toggle('active')" class="w-full p-3 text-left bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase flex justify-between items-center">
-                            ${cat} <span>▼</span>
+                        <button
+                            type="button"
+                            onclick="this.nextElementSibling.classList.toggle('active')"
+                            class="w-full p-3 text-left bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase flex justify-between items-center"
+                        >
+                            ${cat}
+                            <span>▼</span>
                         </button>
+
                         <div class="category-content p-2 space-y-1 bg-white dark:bg-slate-900">
-                            ${exerciseLibrary[cat].map(ex => `
-                                <div onclick="addEx('${ex}', this)" class="p-2 text-[11px] hover:bg-pink-hot/10 cursor-pointer rounded-lg flex justify-between items-center group">
-                                    <span>${ex}</span>
-                                    <span class="text-pink-hot font-bold opacity-0 group-hover:opacity-100">+ ADD</span>
-                                </div>`).join('')}
+                            ${exerciseLibrary[cat]
+                                .map(
+                                    ex => `
+                                        <div
+                                            onclick="addEx('${ex}', this)"
+                                            class="p-2 text-[11px] hover:bg-pink-hot/10 cursor-pointer rounded-lg flex justify-between items-center group"
+                                        >
+                                            <span>${ex}</span>
+                                            <span class="text-pink-hot font-bold opacity-0 group-hover:opacity-100">
+                                                + ADD
+                                            </span>
+                                        </div>
+                                    `
+                                )
+                                .join("")}
                         </div>
-                    </div>`;
+                    </div>
+                `;
             });
         }
 
         // DRAG AND DROP
-        let dragSrcIndex = null, dragSrcDay = null;
-        function handleDragStart(e) { dragSrcIndex = e.currentTarget.dataset.index; dragSrcDay = e.currentTarget.closest('.day-section').dataset.day; }
-        function handleDragOver(e) { e.preventDefault(); }
+        let dragSrcIndex = null;
+        let dragSrcDay = null;
+
+        function handleDragStart(e) {
+            dragSrcIndex = e.currentTarget.dataset.index;
+            dragSrcDay = e.currentTarget.closest(".day-section").dataset.day;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+
         function handleDrop(e) {
-            const targetDay = e.currentTarget.closest('.day-section').dataset.day;
+            const targetDay = e.currentTarget.closest(".day-section").dataset.day;
             const targetIndex = e.currentTarget.dataset.index;
+
             if (dragSrcDay === targetDay) {
                 const item = workoutData.days[dragSrcDay].splice(dragSrcIndex, 1)[0];
                 workoutData.days[dragSrcDay].splice(targetIndex, 0, item);
-                save(); render();
+                save();
+                render();
             }
         }
 
-        function toggleBi(day, idx) { workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi; save(); render(); }
+        function toggleBi(day, idx) {
+            workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi;
+            save();
+            render();
+        }
+
         function duplicateDay(from) {
             const to = prompt("Copiar para qual dia? (segunda, terca, quarta, quinta, sexta, sabado)");
-            if(to && workoutData.days[to.toLowerCase()]) { workoutData.days[to.toLowerCase()] = JSON.parse(JSON.stringify(workoutData.days[from])); save(); render(); }
+            if (to && workoutData.days[to.toLowerCase()]) {
+                workoutData.days[to.toLowerCase()] = JSON.parse(
+                    JSON.stringify(workoutData.days[from])
+                );
+                save();
+                render();
+            }
         }
-        function save() { if(!document.body.classList.contains('is-student-mode')) { workoutData.student = document.getElementById('studentName').value; workoutData.generalNotes = document.getElementById('generalNotes').value; localStorage.setItem('jaque_final_v1', JSON.stringify(workoutData)); } }
-        function loadFromStorage() { const s = localStorage.getItem('jaque_final_v1'); if(s) workoutData = JSON.parse(s); }
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
-        function removeEx(d, i) { workoutData.days[d].splice(i, 1); save(); render(); }
-        function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
-        function clearAll() { if(confirm("Limpar tudo?")) { localStorage.clear(); location.reload(); } }
+
+        function save() {
+            if (!document.body.classList.contains("is-student-mode")) {
+                workoutData.student = document.getElementById("studentName").value;
+                workoutData.generalNotes = document.getElementById("generalNotes").value;
+                localStorage.setItem("jaque_final_v1", JSON.stringify(workoutData));
+            }
+        }
+
+        function loadFromStorage() {
+            const s = localStorage.getItem("jaque_final_v1");
+            if (s) workoutData = JSON.parse(s);
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle("dark");
+        }
+
+        function removeEx(d, i) {
+            workoutData.days[d].splice(i, 1);
+            save();
+            render();
+        }
+
+        function updateHeader() {
+            const name = document.getElementById("studentName").value;
+            document.getElementById("studentDisplayHead").innerText = name
+                ? `ALUNO: ${name}`
+                : "";
+            save();
+        }
+
+        function clearAll() {
+            if (confirm("Limpar tudo?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
 
         function getFullURL() {
             const json = JSON.stringify(workoutData);
-            const enc = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode('0x' + p)));
+            const enc = btoa(
+                encodeURIComponent(json).replace(
+                    /%([0-9A-F]{2})/g,
+                    (m, p) => String.fromCharCode("0x" + p)
+                )
+            );
             return `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
         }
 
@@ -331,26 +895,39 @@
         function shortenLinkWithName() {
             const baseUrl = "https://abre.ai/index.php?a=shorten&url=";
             const longUrl = encodeURIComponent(getFullURL());
-            const studentAlias = workoutData.student.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
-            window.open(`${baseUrl}${longUrl}&custom=${studentAlias}`, '_blank');
+            const studentAlias = workoutData.student
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]/g, "");
+            window.open(`${baseUrl}${longUrl}&custom=${studentAlias}`, "_blank");
         }
 
         function sendWhatsApp() {
             const url = getFullURL();
-            window.open(`https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino atualizado: ${url}`, '_blank');
+            window.open(
+                `https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino atualizado: ${url}`,
+                "_blank"
+            );
         }
 
-        document.getElementById('searchEx').addEventListener('input', function(e) {
+        document.getElementById("searchEx").addEventListener("input", function (e) {
             const term = e.target.value.toLowerCase();
-            document.querySelectorAll('#accordionLib .category-content').forEach(cat => {
+
+            document.querySelectorAll("#accordionLib .category-content").forEach(cat => {
                 let hasMatch = false;
-                cat.querySelectorAll('div').forEach(el => {
+
+                cat.querySelectorAll("div").forEach(el => {
                     const match = el.innerText.toLowerCase().includes(term);
-                    el.style.display = match ? 'flex' : 'none';
-                    if(match) hasMatch = true;
+                    el.style.display = match ? "flex" : "none";
+                    if (match) hasMatch = true;
                 });
-                if(term.length > 1 && hasMatch) cat.classList.add('active');
-                else if(term.length <= 1) cat.classList.remove('active');
+
+                if (term.length > 1 && hasMatch) {
+                    cat.classList.add("active");
+                } else if (term.length <= 1) {
+                    cat.classList.remove("active");
+                }
             });
         });
 
