@@ -2,11 +2,9 @@
 <html lang="pt-BR" class="dark">
 <head>
     <link rel="icon" href="https://zeus-rr.github.io/treino/icon.png">
-    <link rel="apple-touch-icon" href="https://zeus-rr.github.io/treino/icon.png">
-    <link rel="shortcut icon" href="https://zeus-rr.github.io/treino/icon.png">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>TREINO PERSONAL JAQUE</title>
+    <title id="pageTitle">SISTEMA DE TREINO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -14,8 +12,7 @@
             theme: { 
                 extend: { 
                     colors: { 
-                        'primary': '#6366f1', 
-                        'pink-hot': '#FF1493', 
+                        'pink-hot': 'var(--main-color, #FF1493)', 
                         'bg-dark': '#0b0f1a' 
                     } 
                 } 
@@ -23,77 +20,75 @@
         }
     </script>
     <style>
-        .is-conjugated { margin-bottom: -1rem !important; border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; border-bottom: 2px dashed #FF1493 !important; z-index: 10; }
+        :root { --main-color: #FF1493; }
+        .is-conjugated { margin-bottom: -1rem !important; border-bottom-left-radius: 0 !important; border-bottom-right-radius: 0 !important; border-bottom: 2px dashed var(--main-color) !important; z-index: 10; }
         .is-conjugated + .workout-item { border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }
-        .is-student-mode .admin-ui, .is-student-mode .edit-btn, .is-student-mode #btnTutorial, .is-student-mode .drag-handle { display: none !important; }
-        .is-student-mode main { grid-template-columns: 1fr !important; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #FF1493; border-radius: 10px; }
+        .is-student-mode .admin-ui, .is-student-mode .edit-btn, .is-student-mode .drag-handle { display: none !important; }
+        .pink-bold { color: var(--main-color) !important; font-weight: 900 !important; }
+        
+        .btn-whatsapp-float { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 8px 16px; border-radius: 50px; font-weight: 800; text-transform: uppercase; font-size: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px; z-index: 1000; transition: all 0.3s ease; text-decoration: none; border: 2px solid white; }
+        .btn-whatsapp-float img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: white; }
         
         .category-content { display: none; }
         .category-content.active { display: block; animation: slideDown 0.3s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        @media print { .no-print { display: none !important; } body { background: white !important; color: black !important; } }
-        body { transition: background-color 0.3s ease, color 0.3s ease; }
-        #tutorialModal { display: none; }
-        #tutorialModal.active { display: flex; }
-        .pink-bold { color: #FF1493 !important; font-weight: 900 !important; }
-        .workout-item.dragging { opacity: 0.4; border: 2px dashed #FF1493; }
-        .drag-handle { cursor: grab; padding: 0 10px; color: #64748b; font-size: 1.2rem; display: flex; align-items: center; }
-
-        .btn-whatsapp-float { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 12px 20px; border-radius: 50px; font-weight: 900; text-transform: uppercase; font-size: 11px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px; z-index: 1000; transition: all 0.3s ease; text-decoration: none; }
-        .btn-whatsapp-float:hover { transform: scale(1.05) translateY(-5px); filter: brightness(1.1); }
+        .exercise-added { animation: added-pulse 0.6s ease-out; border-color: #22c55e !important; }
+        @keyframes added-pulse { 0% { background-color: transparent; } 50% { background-color: rgba(34, 197, 94, 0.2); transform: scale(1.02); } 100% { background-color: transparent; } }
         
-        .category-btn { transition: all 0.2s ease; border-left: 4px solid transparent; }
-        .category-btn:hover { background: rgba(255, 20, 147, 0.05); border-left-color: #FF1493; }
-        .ex-item { transition: all 0.2s; }
-        .ex-item:hover { transform: translateX(5px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--main-color); border-radius: 10px; }
+        .drag-handle { cursor: grab; padding: 0 10px; color: #64748b; font-size: 1.2rem; }
+        .workout-item.dragging { opacity: 0.4; border: 2px dashed var(--main-color); }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-[#0b0f1a] text-slate-800 dark:text-slate-100 font-sans antialiased flex flex-col min-h-screen">
+<body class="bg-slate-100 dark:bg-[#0b0f1a] text-slate-800 dark:text-slate-100 font-sans min-h-screen">
 
-    <a href="https://api.whatsapp.com/send?phone=5515981776856&text=Oi%20Jaque,%20tenho%20uma%20dúvida%20sobre%20o%20meu%20treino!" target="_blank" class="btn-whatsapp-float no-print">
-        <span>Falar com a Jaque</span> 💬
+    <a id="waFloat" href="#" target="_blank" class="btn-whatsapp-float no-print">
+        <img id="waPhoto" src="https://zeus-rr.github.io/treino/icon.png">
+        <span id="waText">Falar com Professor</span>
     </a>
-
-    <div id="tutorialModal" class="fixed inset-0 z-[100] bg-slate-900/90 backdrop-blur-sm p-4 items-center justify-center">
-        <div class="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90vh] rounded-[2.5rem] overflow-hidden flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800">
-            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                <h2 class="text-xl font-black uppercase italic pink-bold">Guia Prof. Jaque</h2>
-                <button onclick="toggleTutorial()" class="text-slate-400 hover:text-red-500 font-bold text-2xl">&times;</button>
-            </div>
-            <div class="p-8 overflow-y-auto custom-scrollbar space-y-4 text-sm text-slate-600 dark:text-slate-300">
-                <p><b>1. Arrastar:</b> Use o ícone ☰ para mudar a ordem dos exercícios.</p>
-                <p><b>2. Duplicar:</b> Clique no ícone de cópia 📄 ao lado do dia para repetir o treino.</p>
-                <p><b>3. Encurtar:</b> Use o botão "Encurtar" para gerar um link amigável.</p>
-            </div>
-            <div class="p-6 text-center">
-                <button onclick="toggleTutorial()" class="bg-pink-hot text-white px-8 py-3 rounded-full font-black uppercase text-xs shadow-lg hover:scale-105 transition-all">Entendido!</button>
-            </div>
-        </div>
-    </div>
 
     <header class="p-4 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl italic uppercase tracking-tighter pink-bold">PERSONAL _ JAQUE</h1>
             <div class="flex items-center gap-3">
-                <div id="studentDisplayHead" class="text-sm font-bold pink-bold hidden sm:block"></div>
-                <button id="btnTutorial" onclick="toggleTutorial()" class="bg-slate-100 dark:bg-slate-800 text-slate-500 px-3 py-2 rounded-xl text-[10px] font-black uppercase border border-slate-200 dark:border-slate-700 hover:text-pink-hot">Ajuda ❓</button>
-                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    <span class="dark:hidden">🌙</span>
-                    <span class="hidden dark:inline">☀️</span>
-                </button>
+                <img id="displayImgProf" src="https://zeus-rr.github.io/treino/icon.png" class="w-10 h-10 rounded-full border-2 border-pink-hot object-cover shadow-lg">
+                <h1 id="brandName" class="text-xl italic uppercase tracking-tighter pink-bold">PERSONAL _ JAQUE</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <img id="displayImgAluno" src="" class="w-9 h-9 rounded-full object-cover hidden border-2 border-slate-300 shadow-sm">
+                    <div id="studentDisplayHead" class="text-sm font-bold pink-bold hidden sm:block"></div>
+                </div>
+                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border">🌓</button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow w-full">
+    <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         <aside class="lg:col-span-4 space-y-4 admin-ui">
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-pink-hot/20">
+                <h3 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">Painel do Professor</h3>
+                <div class="space-y-3">
+                    <input type="text" id="confName" oninput="updateConfigs()" placeholder="Nome da Marca" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none border-b-2 border-pink-hot">
+                    <input type="text" id="confPhone" oninput="updateConfigs()" placeholder="WhatsApp (Ex: 55159...)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none">
+                    <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
+                        <label class="text-[10px] font-bold uppercase opacity-50">Cor do Tema</label>
+                        <input type="color" id="confColor" oninput="updateConfigs()" class="w-10 h-6 bg-transparent cursor-pointer">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="document.getElementById('imgProf').click()" class="text-[9px] bg-slate-800 text-white p-2 rounded-lg font-bold">FOTO PROF</button>
+                        <button onclick="document.getElementById('imgAluno').click()" class="text-[9px] bg-slate-200 dark:bg-slate-700 p-2 rounded-lg font-bold">FOTO ALUNO</button>
+                        <input type="file" id="imgProf" class="hidden" accept="image/*" onchange="handleImage(this, 'prof')">
+                        <input type="file" id="imgAluno" class="hidden" accept="image/*" onchange="handleImage(this, 'student')">
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
-                <label class="text-[10px] font-bold uppercase opacity-50 ml-2">Aluno e Dia</label>
-                <input type="text" id="studentName" oninput="updateHeader()" placeholder="Nome do Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-pink-hot mb-3 font-bold">
-                <select id="daySelector" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl border-none outline-none focus:ring-2 focus:ring-pink-hot font-bold text-sm">
+                <label class="text-[10px] font-bold uppercase opacity-50 ml-2">Dados do Aluno</label>
+                <input type="text" id="studentName" oninput="updateHeader()" placeholder="Nome do Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3 font-bold outline-none focus:ring-2 focus:ring-pink-hot">
+                <select id="daySelector" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold text-sm outline-none">
                     <option value="segunda">Segunda-feira</option>
                     <option value="terca">Terça-feira</option>
                     <option value="quarta">Quarta-feira</option>
@@ -104,99 +99,131 @@
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
-                <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Biblioteca de Exercícios</h3>
-                <input type="text" id="searchEx" placeholder="Buscar exercício..." class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4 text-sm outline-none focus:ring-1 focus:ring-pink-hot">
-                <div id="accordionLib" class="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Biblioteca Completa</h3>
+                <input type="text" id="searchEx" placeholder="Buscar exercício..." class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4 text-sm outline-none">
+                <div id="accordionLib" class="space-y-2 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
         </aside>
 
         <section class="lg:col-span-8 space-y-6">
             <div class="flex flex-wrap gap-2 no-print">
-                <button onclick="sendWhatsApp()" class="bg-green-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-green-700 transition admin-ui">WhatsApp Aluno 📱</button>
-                <button id="btnCopy" onclick="generateLink()" class="bg-pink-hot text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:brightness-110 admin-ui">Copiar Link 🔗</button>
-                <button onclick="shortenLink()" class="bg-blue-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg hover:bg-blue-700 admin-ui">Encurtar Link ✂️</button>
-                <button onclick="window.print()" class="bg-slate-700 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">Gerar PDF 📄</button>
+                <button onclick="sendWhatsApp()" class="bg-green-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Enviar p/ Aluno 📱</button>
+                <button id="btnCopy" onclick="generateLink()" class="bg-pink-hot text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Copiar Link 🔗</button>
+                <button onclick="window.print()" class="bg-slate-700 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">PDF 📄</button>
                 <button onclick="clearAll()" class="bg-red-500/10 text-red-500 px-5 py-3 rounded-full font-black text-[10px] uppercase admin-ui">Limpar Tudo</button>
             </div>
 
             <div id="weekDisplay" class="space-y-10"></div>
 
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 mt-8">
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800">
                 <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Observações Gerais</h3>
-                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none focus:ring-1 focus:ring-pink-hot min-h-[120px]" placeholder="Orientações de descanso, carga ou cardio..."></textarea>
+                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none min-h-[100px]" placeholder="Dicas de cardio, descanso ou avisos..."></textarea>
             </div>
         </section>
     </main>
 
-    <footer class="mt-auto p-8 text-center border-t border-slate-200 dark:border-slate-800 opacity-60">
-        <p class="text-[10px] font-bold uppercase tracking-widest">Desenvolvido por <span class="pink-bold">Rafael Analista de Sistemas</span></p>
-    </footer>
-
     <script>
         const exerciseLibrary = {
-            "Peito (Variantes)": ["Supino Reto Barra", "Supino Reto Halteres", "Supino Inclinado Barra", "Supino Inclinado Halteres", "Supino Declinado", "Crucifixo Reto", "Crucifixo Inclinado", "Peck Deck (Voador)", "Crossover Cabo Alto", "Crossover Cabo Médio", "Crossover Cabo Baixo", "Flexão de Braços Solo", "Flexão Inclinada", "Flexão Declinada", "Supino Máquina Convergente", "Fly no Banco 30º", "Pullover Halter", "Dips (Paralelas) Peito"],
-            "Costas (Dorsal/Lombar)": ["Puxada Frente Aberta", "Puxada Triângulo", "Puxada Supinada", "Remada Curvada Barra", "Remada Curvada Halteres", "Remada Unilateral (Serrote)", "Remada Baixa Polia", "Remada Cavalinho", "Pulldown Corda", "Barra Fixa Aberta", "Barra Fixa Pegada Inversa", "Levantamento Terra Clássico", "Terra Sumô", "Extensão Lombar (Banco Romano)", "Remada Máquina Articulada", "Face Pull (Posterior Ombro/Costas)", "Remada Alta Barra", "Remada Alta Polia"],
-            "Pernas (Quadríceps)": ["Agachamento Livre Barra", "Agachamento Hack", "Leg Press 45º", "Leg Press Horizontal", "Cadeira Extensora", "Agachamento Búlgaro", "Afundo com Halteres", "Passada (Walking Lunges)", "Agachamento Sumô", "Agachamento Frontal", "Sissy Squat", "Agachamento na Parede (Isometria)", "Extensão de Pernas Unilateral"],
-            "Pernas (Posterior/Glúteo)": ["Stiff Barra", "Stiff Halteres", "Mesa Flexora", "Cadeira Flexora", "Flexora Vertical Unilateral", "Elevação Pélvica Barra", "Elevação Pélvica Máquina", "Cadeira Abdutora", "Cadeira Adutora", "Glúteo Quatro Apoios", "Glúteo no Cabo (Coice)", "Good Morning (Bom Dia)", "Levantamento Terra Romeno (RDL)", "Abdução com Caneleiras em Pe", "Abdução Com Caneleira (DL)"],
-            "Ombros (Deltoides)": ["Desenvolvimento Militar", "Desenvolvimento Halteres", "Desenvolvimento Arnold", "Elevação Lateral Halteres", "Elevação Lateral Cabo", "Elevação Frontal Barra", "Elevação Frontal Halter", "Crucifixo Inverso Halter", "Crucifixo Inverso Máquina", "Remada Alta Pegada Aberta", "Encolhimento de Ombros Barra", "Encolhimento Halteres"],
-            "Braços (Bíceps)": ["Rosca Direta Barra W", "Rosca Direta Barra Reta", "Rosca Alternada", "Rosca Martelo", "Rosca Scott Barra", "Rosca Scott Máquina", "Rosca Concentrada", "Rosca Inclinada 45º", "Rosca 21", "Rosca Cross Baixo", "Rosca Inversa Barra", "Rosca Pajé (Antebraço)"],
-            "Braços (Tríceps)": ["Tríceps Pulley V", "Tríceps Corda", "Tríceps Testa Barra W", "Tríceps Francês Halter", "Tríceps Francês Cabo", "Mergulho no Banco", "Dips (Paralelas) Tríceps", "Tríceps Coice Halter", "Tríceps Coice Cabo", "Supino Pegada Fechada", "Tríceps Unilateral Inverso"],
+            "Peito (Variantes)": ["Supino Reto Barra", "Supino Reto Halteres", "Supino Inclinado Barra", "Supino Inclinado Halteres", "Supino Declinado", "Crucifixo Reto", "Crucifixo Inclinado", "Peck Deck (Voador)", "Crossover Cabo Alto", "Crossover Cabo Médio", "Crossover Cabo Baixo", "Flexão de Braços Solo", "Supino Máquina Convergente", "Fly no Banco 30º", "Pullover Halter", "Dips (Paralelas) Peito"],
+            "Costas (Dorsal/Lombar)": ["Puxada Frente Aberta", "Puxada Triângulo", "Puxada Supinada", "Remada Curvada Barra", "Remada Curvada Halteres", "Remada Unilateral (Serrote)", "Remada Baixa Polia", "Remada Cavalinho", "Pulldown Corda", "Barra Fixa Aberta", "Levantamento Terra Clássico", "Extensão Lombar", "Remada Máquina Articulada", "Face Pull"],
+            "Pernas (Quadríceps)": ["Agachamento Livre Barra", "Agachamento Hack", "Leg Press 45º", "Leg Press Horizontal", "Cadeira Extensora", "Agachamento Búlgaro", "Afundo com Halteres", "Passada (Walking Lunges)", "Agachamento Sumô", "Sissy Squat"],
+            "Pernas (Posterior/Glúteo)": ["Stiff Barra", "Stiff Halteres", "Mesa Flexora", "Cadeira Flexora", "Elevação Pélvica Barra", "Cadeira Abdutora", "Cadeira Adutora", "Glúteo no Cabo (Coice)", "Levantamento Terra Romeno (RDL)", "Abdução com Caneleiras"],
+            "Ombros (Deltoides)": ["Desenvolvimento Militar", "Desenvolvimento Halteres", "Desenvolvimento Arnold", "Elevação Lateral Halteres", "Elevação Lateral Cabo", "Elevação Frontal Barra", "Crucifixo Inverso Halter", "Encolhimento de Ombros"],
+            "Braços (Bíceps)": ["Rosca Direta Barra W", "Rosca Alternada", "Rosca Martelo", "Rosca Scott Barra", "Rosca Concentrada", "Rosca Inclinada 45º", "Rosca Cross Baixo", "Rosca Inversa Barra"],
+            "Braços (Tríceps)": ["Tríceps Pulley V", "Tríceps Corda", "Tríceps Testa Barra W", "Tríceps Francês Halter", "Mergulho no Banco", "Dips (Paralelas) Tríceps", "Tríceps Coice Halter", "Supino Pegada Fechada"],
             "Panturrilha": ["Gêmeos em Pé", "Gêmeos Sentado", "Gêmeos no Leg Press"],
-            "Core e Abs": ["Abdominal Supra Solo", "Abdominal Infra Solo", "Abdominal Infra Suspenso", "Prancha Isométrica", "Prancha Lateral", "Russian Twist", "Abdominal Roda", "Abdominal na Polia (Reza)", "Bicicleta no Ar", "V-Sit (Canivete)", "Vácuo Abdominal"],
-            "Exercícios com Bola (Swiss Ball)": ["Abdominal na Bola", "Infra com Bola", "Ponte na Bola", "Extensão Lombar na Bola", "Agachamento com Bola na Parede", "Prancha com Antebraço na Bola", "Passagem de Bola (Mãos para Pés)"],
-            "Equilíbrio e Estabilidade": ["Equilíbrio Unipodal (Chão)", "Equilíbrio no Bosu", "Aviãozinho (Propriocepção)", "Agachamento no Disco de Equilíbrio", "Prancha Lateral Dinâmica", "Passada em Superfície Instável"],
-            "Cárdio e Funcional": ["Corrida Esteira", "Bicicleta Ergométrica", "Corda Naval", "Elíptico (Transport)", "Remo Indoor", "Pular Corda", "Burpees", "Polichinelos", "Mountain Climbers", "Subida no Caixote", "Swing Kettlebell", "Thruster", "Wall Ball"]
+            "Core e Abs": ["Abdominal Supra Solo", "Abdominal Infra Solo", "Prancha Isométrica", "Prancha Lateral", "Abdominal Roda", "Abdominal na Polia", "V-Sit (Canivete)", "Vácuo Abdominal"],
+            "Cárdio e Funcional": ["Corrida Esteira", "Bicicleta Ergométrica", "Corda Naval", "Elíptico", "Pular Corda", "Burpees", "Polichinelos", "Mountain Climbers", "Swing Kettlebell"]
         };
 
-        let workoutData = { student: "", generalNotes: "", days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } };
+        let workoutData = { 
+            student: "", generalNotes: "", photoProf: "", photoStudent: "",
+            profName: "PERSONAL _ JAQUE", profPhone: "5515981776856", themeColor: "#FF1493",
+            days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
+        };
 
         function init() {
-            const savedTheme = localStorage.getItem('theme_jaque') || 'dark';
-            document.documentElement.className = savedTheme;
             renderLibrary();
-            
             const urlParams = new URLSearchParams(window.location.search);
             const alunoData = urlParams.get('aluno');
-            
             if (alunoData) {
                 try {
                     const decoded = decodeURIComponent(atob(alunoData).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
                     workoutData = JSON.parse(decoded);
                     document.body.classList.add('is-student-mode');
                 } catch(e) { loadFromStorage(); }
-            } else {
-                loadFromStorage();
-            }
+            } else { loadFromStorage(); }
+            applyConfigs();
             render();
         }
 
-        function renderLibrary() {
-            const container = document.getElementById('accordionLib');
-            container.innerHTML = "";
-            Object.keys(exerciseLibrary).forEach((cat) => {
-                const catDiv = document.createElement('div');
-                catDiv.className = "mb-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-sm";
-                catDiv.innerHTML = `
-                    <button onclick="toggleCat(this)" class="category-btn w-full p-4 text-left flex justify-between items-center group">
-                        <span class="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 group-hover:text-pink-hot transition-colors">${cat}</span>
-                        <div class="bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-pink-hot" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </button>
-                    <div class="category-content hidden p-2 space-y-1 border-t border-slate-50 dark:border-slate-800/50">
-                        ${exerciseLibrary[cat].map(ex => `
-                            <div class="ex-item flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer group" onclick="addEx('${ex}')">
-                                <span class="text-[12px] font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">${ex}</span>
-                                <span class="opacity-0 group-hover:opacity-100 bg-pink-hot text-white text-[10px] font-bold px-2 py-1 rounded-lg transition-all shadow-lg shadow-pink-500/30">
-                                    + ADD
-                                </span>
-                            </div>
-                        `).join('')}
-                    </div>`;
-                container.appendChild(catDiv);
-            });
+        function applyConfigs() {
+            document.documentElement.style.setProperty('--main-color', workoutData.themeColor);
+            document.getElementById('brandName').innerText = workoutData.profName;
+            document.getElementById('confName').value = workoutData.profName;
+            document.getElementById('confPhone').value = workoutData.profPhone;
+            document.getElementById('confColor').value = workoutData.themeColor;
+            
+            const firstName = workoutData.profName.split(' ')[0];
+            document.getElementById('waText').innerText = `Falar com ${firstName}`;
+            document.getElementById('waFloat').href = `https://api.whatsapp.com/send?phone=${workoutData.profPhone}&text=Oi ${firstName}, tenho uma dúvida!`;
+            
+            if(workoutData.photoProf) {
+                document.getElementById('displayImgProf').src = workoutData.photoProf;
+                document.getElementById('waPhoto').src = workoutData.photoProf;
+            }
+        }
+
+        function updateConfigs() {
+            workoutData.profName = document.getElementById('confName').value;
+            workoutData.profPhone = document.getElementById('confPhone').value;
+            workoutData.themeColor = document.getElementById('confColor').value;
+            applyConfigs(); save();
+        }
+
+        function handleImage(input, type) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX = 150;
+                    const scale = MAX / Math.max(img.width, img.height);
+                    canvas.width = img.width * scale; canvas.height = img.height * scale;
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                    if (type === 'prof') workoutData.photoProf = base64;
+                    else workoutData.photoStudent = base64;
+                    applyConfigs(); save(); render();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function playClickSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const g = ctx.createGain();
+                osc.connect(g); g.connect(ctx.destination);
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+                g.gain.setValueAtTime(0.1, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                osc.start(); osc.stop(ctx.currentTime + 0.1);
+            } catch(e) {}
+        }
+
+        function addEx(name, el) {
+            playClickSound();
+            const day = document.getElementById('daySelector').value;
+            workoutData.days[day].push({ n: name, r: "3x12", w: "", obs: "", bi: false });
+            el.classList.add('exercise-added');
+            setTimeout(() => el.classList.remove('exercise-added'), 600);
+            save(); render();
         }
 
         function render() {
@@ -209,58 +236,66 @@
                 document.getElementById('generalNotes').value = workoutData.generalNotes || "";
             }
             
+            if (workoutData.photoStudent) {
+                document.getElementById('displayImgAluno').src = workoutData.photoStudent;
+                document.getElementById('displayImgAluno').classList.remove('hidden');
+            }
             document.getElementById('studentDisplayHead').innerText = workoutData.student ? `ALUNO: ${workoutData.student}` : "";
-            const dayNames = {segunda: "Segunda-feira", terca: "Terça-feira", quarta: "Quarta-feira", quinta: "Quinta-feira", sexta: "Sexta-feira", sabado: "Sábado"};
-            
+
             Object.keys(workoutData.days).forEach(dayKey => {
-                const dayTrain = workoutData.days[dayKey];
-                if (dayTrain.length === 0) return;
-
+                if (workoutData.days[dayKey].length === 0) return;
                 let html = `<div class="day-section" data-day="${dayKey}">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-2xl font-black uppercase italic pink-bold flex items-center gap-2">
-                            <span class="w-8 h-8 bg-pink-hot text-white rounded-full flex items-center justify-center text-xs not-italic">${dayKey[0].toUpperCase()}</span>
-                            ${dayNames[dayKey]}
-                        </h2>
-                        <button onclick="duplicateDay('${dayKey}')" class="admin-ui bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold hover:text-pink-hot transition-colors">📄 DUPLICAR</button>
-                    </div>
-                    <div class="grid grid-cols-1 gap-3">`;
-
-                dayTrain.forEach((ex, idx) => {
+                    <h2 class="text-xl font-black uppercase italic pink-bold mb-4 flex items-center justify-between">
+                        ${dayKey}
+                        <button onclick="duplicateDay('${dayKey}')" class="admin-ui text-[10px] bg-slate-200 dark:bg-slate-800 px-3 py-1 rounded-full not-italic">DUPLICAR</button>
+                    </h2>
+                    <div class="grid gap-3">`;
+                workoutData.days[dayKey].forEach((ex, idx) => {
                     html += `
-                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-5 rounded-[2rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center" 
-                         draggable="${!isStudent}" data-index="${idx}"
-                         ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] shadow-sm border border-slate-200 dark:border-slate-800 flex items-center"
+                         draggable="${!isStudent}" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" data-index="${idx}">
                         <div class="drag-handle admin-ui">☰</div>
-                        <div class="flex-1">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <h4 class="font-bold text-sm uppercase tracking-tight">${ex.n}</h4>
-                                    <input type="text" value="${ex.obs || ''}" oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()" class="w-full mt-2 bg-transparent border-b border-dashed border-slate-300 dark:border-slate-700 text-[10px] outline-none italic" placeholder="Instrução..." ${isStudent ? 'disabled' : ''}>
-                                    <div class="flex gap-2 mt-3 no-print">
-                                        <button onclick="toggleBi('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full ${ex.bi ? 'bg-pink-hot text-white' : 'bg-slate-100 dark:bg-slate-800'}">CONJUGADO</button>
-                                        <button onclick="removeEx('${dayKey}', ${idx})" class="edit-btn text-[8px] font-black px-3 py-1.5 rounded-full bg-red-500/10 text-red-500">REMOVER</button>
-                                    </div>
+                        <div class="flex-1 flex items-center justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-xs uppercase">${ex.n}</h4>
+                                <input type="text" value="${ex.obs || ''}" oninput="workoutData.days['${dayKey}'][${idx}].obs=this.value;save()" class="w-full bg-transparent border-b border-dashed text-[10px] outline-none mt-1" placeholder="Obs..." ${isStudent ? 'disabled' : ''}>
+                                <div class="flex gap-2 mt-2 no-print admin-ui">
+                                    <button onclick="toggleBi('${dayKey}', ${idx})" class="text-[8px] font-bold px-2 py-1 rounded-full ${ex.bi ? 'bg-pink-hot text-white' : 'bg-slate-100 dark:bg-slate-800'}">CONJUGAR</button>
+                                    <button onclick="removeEx('${dayKey}', ${idx})" class="text-[8px] font-bold px-2 py-1 bg-red-500/10 text-red-500 rounded-full">REMOVER</button>
                                 </div>
-                                <div class="flex gap-4 ml-4">
-                                    <div class="flex flex-col items-center">
-                                        <span class="text-[7px] font-black opacity-40 mb-1 uppercase">Séries</span>
-                                        <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-16 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none" ${isStudent ? 'disabled' : ''}>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <span class="text-[7px] font-black opacity-40 mb-1 uppercase">Carga</span>
-                                        <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" class="w-14 bg-slate-100 dark:bg-slate-800 text-center font-bold text-xs p-2 rounded-xl outline-none" ${isStudent ? 'disabled' : ''}>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="flex gap-2 ml-4">
+                                <input type="text" value="${ex.r}" oninput="workoutData.days['${dayKey}'][${idx}].r=this.value;save()" class="w-12 bg-slate-100 dark:bg-slate-800 text-center text-[10px] font-bold p-2 rounded-lg" ${isStudent ? 'disabled' : ''}>
+                                <input type="text" value="${ex.w}" oninput="workoutData.days['${dayKey}'][${idx}].w=this.value;save()" class="w-10 bg-slate-100 dark:bg-slate-800 text-center text-[10px] font-bold p-2 rounded-lg" ${isStudent ? 'disabled' : ''}>
                             </div>
                         </div>
                     </div>`;
                 });
-                html += `</div></div>`;
-                container.innerHTML += html;
+                container.innerHTML += html + `</div></div>`;
             });
         }
 
+        function renderLibrary() {
+            const container = document.getElementById('accordionLib');
+            container.innerHTML = "";
+            Object.keys(exerciseLibrary).forEach(cat => {
+                container.innerHTML += `
+                    <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden mb-2">
+                        <button onclick="this.nextElementSibling.classList.toggle('active')" class="w-full p-3 text-left bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase flex justify-between items-center">
+                            ${cat} <span>▼</span>
+                        </button>
+                        <div class="category-content p-2 space-y-1 bg-white dark:bg-slate-900">
+                            ${exerciseLibrary[cat].map(ex => `
+                                <div onclick="addEx('${ex}', this)" class="p-2 text-[11px] hover:bg-pink-hot/10 cursor-pointer rounded-lg flex justify-between items-center group">
+                                    <span>${ex}</span>
+                                    <span class="text-pink-hot font-bold opacity-0 group-hover:opacity-100">+ ADD</span>
+                                </div>`).join('')}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // DRAG AND DROP
         let dragSrcIndex = null, dragSrcDay = null;
         function handleDragStart(e) { dragSrcIndex = e.currentTarget.dataset.index; dragSrcDay = e.currentTarget.closest('.day-section').dataset.day; }
         function handleDragOver(e) { e.preventDefault(); }
@@ -274,50 +309,39 @@
             }
         }
 
-        function duplicateDay(fromDay) {
-            const promptDay = prompt("Para qual dia copiar? (segunda, terca, quarta, quinta, sexta, sabado)");
-            if(!promptDay) return;
-            const toDay = promptDay.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace("-feira", "");
-            if(workoutData.days[toDay]) { workoutData.days[toDay] = JSON.parse(JSON.stringify(workoutData.days[fromDay])); save(); render(); }
-        }
-
-        function addEx(name) { const day = document.getElementById('daySelector').value; workoutData.days[day].push({ n: name, r: "3x12", w: "", obs: "", bi: false }); save(); render(); }
-        function save() { if(document.body.classList.contains('is-student-mode')) return; workoutData.student = document.getElementById('studentName').value; workoutData.generalNotes = document.getElementById('generalNotes').value; localStorage.setItem('jaque_pro_v2', JSON.stringify(workoutData)); }
-        function loadFromStorage() { const saved = localStorage.getItem('jaque_pro_v2'); if(saved) workoutData = JSON.parse(saved); }
-        function toggleCat(btn) { btn.nextElementSibling.classList.toggle('active'); }
-        function toggleTutorial() { document.getElementById('tutorialModal').classList.toggle('active'); }
-        function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme_jaque', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
         function toggleBi(day, idx) { workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi; save(); render(); }
-        function removeEx(day, idx) { if(confirm("Remover exercício?")) { workoutData.days[day].splice(idx, 1); save(); render(); } }
-        function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
-        function clearAll() { if(confirm("Limpar tudo?")) { localStorage.removeItem('jaque_pro_v2'); location.reload(); } }
-
-        function getGeneratedURL() {
-            const jsonStr = JSON.stringify(workoutData);
-            const encoded = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (match, p1) => String.fromCharCode('0x' + p1)));
-            return `${window.location.origin}${window.location.pathname}?aluno=${encoded}`;
+        function duplicateDay(from) {
+            const to = prompt("Copiar para qual dia? (segunda, terca, quarta, quinta, sexta, sabado)");
+            if(to && workoutData.days[to.toLowerCase()]) { workoutData.days[to.toLowerCase()] = JSON.parse(JSON.stringify(workoutData.days[from])); save(); render(); }
         }
+        function save() { if(!document.body.classList.contains('is-student-mode')) { workoutData.student = document.getElementById('studentName').value; workoutData.generalNotes = document.getElementById('generalNotes').value; localStorage.setItem('jaque_final_v1', JSON.stringify(workoutData)); } }
+        function loadFromStorage() { const s = localStorage.getItem('jaque_final_v1'); if(s) workoutData = JSON.parse(s); }
+        function toggleTheme() { document.documentElement.classList.toggle('dark'); }
+        function removeEx(d, i) { workoutData.days[d].splice(i, 1); save(); render(); }
+        function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
+        function clearAll() { if(confirm("Limpar tudo?")) { localStorage.clear(); location.reload(); } }
 
         function generateLink() {
-            navigator.clipboard.writeText(getGeneratedURL()).then(() => {
-                const btn = document.getElementById('btnCopy');
-                btn.innerText = "COPIADO! ✅";
-                setTimeout(() => btn.innerText = "Copiar Link 🔗", 2000);
-            });
+            const json = JSON.stringify(workoutData);
+            const enc = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode('0x' + p)));
+            const url = `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
+            navigator.clipboard.writeText(url);
+            alert("Link do Aluno Copiado com Sucesso!");
         }
 
         function sendWhatsApp() {
-            const text = encodeURIComponent(`Olá ${workoutData.student || 'Aluno'}, aqui está seu treino: ${getGeneratedURL()}`);
-            window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+            const json = JSON.stringify(workoutData);
+            const enc = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode('0x' + p)));
+            const url = `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
+            window.open(`https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino atualizado: ${url}`, '_blank');
         }
 
-        function shortenLink() { window.open(`https://abre.ai/index.php?a=shorten&url=${encodeURIComponent(getGeneratedURL())}`, '_blank'); }
-
+        // BUSCA
         document.getElementById('searchEx').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             document.querySelectorAll('#accordionLib .category-content').forEach(cat => {
                 let hasMatch = false;
-                cat.querySelectorAll('.ex-item').forEach(el => {
+                cat.querySelectorAll('div').forEach(el => {
                     const match = el.innerText.toLowerCase().includes(term);
                     el.style.display = match ? 'flex' : 'none';
                     if(match) hasMatch = true;
