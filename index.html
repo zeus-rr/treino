@@ -109,6 +109,7 @@
             <div class="flex flex-wrap gap-2 no-print">
                 <button onclick="sendWhatsApp()" class="bg-green-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Enviar p/ Aluno 📱</button>
                 <button id="btnCopy" onclick="generateLink()" class="bg-pink-hot text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Copiar Link 🔗</button>
+                <button onclick="shortenLinkWithName()" class="bg-blue-600 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg admin-ui">Encurtar Link ✂️</button>
                 <button onclick="window.print()" class="bg-slate-700 text-white px-5 py-3 rounded-full font-black text-[10px] uppercase shadow-lg">PDF 📄</button>
                 <button onclick="clearAll()" class="bg-red-500/10 text-red-500 px-5 py-3 rounded-full font-black text-[10px] uppercase admin-ui">Limpar Tudo</button>
             </div>
@@ -321,18 +322,32 @@
         function updateHeader() { document.getElementById('studentDisplayHead').innerText = `ALUNO: ${document.getElementById('studentName').value}`; save(); }
         function clearAll() { if(confirm("Limpar tudo?")) { localStorage.clear(); location.reload(); } }
 
-        function generateLink() {
+        function getFullURL() {
             const json = JSON.stringify(workoutData);
             const enc = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode('0x' + p)));
-            const url = `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
-            navigator.clipboard.writeText(url);
+            return `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
+        }
+
+        function generateLink() {
+            navigator.clipboard.writeText(getFullURL());
             alert("Link do Aluno Copiado com Sucesso!");
         }
 
+        function shortenLinkWithName() {
+            const baseUrl = "https://abre.ai/index.php?a=shorten&url=";
+            const longUrl = encodeURIComponent(getFullURL());
+            
+            // Limpa o nome do aluno para usar como apelido (remove espaços e caracteres especiais)
+            const studentAlias = workoutData.student.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]/g, "");
+
+            // Abre o abre.ai já com a URL e o apelido sugerido
+            window.open(`${baseUrl}${longUrl}&custom=${studentAlias}`, '_blank');
+        }
+
         function sendWhatsApp() {
-            const json = JSON.stringify(workoutData);
-            const enc = btoa(encodeURIComponent(json).replace(/%([0-9A-F]{2})/g, (m, p) => String.fromCharCode('0x' + p)));
-            const url = `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
+            const url = getFullURL();
             window.open(`https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino atualizado: ${url}`, '_blank');
         }
 
