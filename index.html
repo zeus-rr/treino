@@ -72,15 +72,16 @@
                 <div class="space-y-3">
                     <input type="text" id="confName" oninput="updateConfigs()" placeholder="Nome da Marca" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none border-b-2 border-pink-hot">
                     <input type="text" id="confPhone" oninput="updateConfigs()" placeholder="WhatsApp (Ex: 55159...)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none">
+                    
+                    <div class="space-y-2 py-2">
+                        <label class="text-[9px] font-bold uppercase opacity-60 ml-1">URLs das Imagens</label>
+                        <input type="url" id="urlProf" oninput="handleURLImage(this, 'prof')" placeholder="Link Foto Professor (URL)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
+                        <input type="url" id="urlAluno" oninput="handleURLImage(this, 'student')" placeholder="Link Foto Aluno (URL)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
+                    </div>
+
                     <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
                         <label class="text-[10px] font-bold uppercase opacity-50">Cor do Tema</label>
                         <input type="color" id="confColor" oninput="updateConfigs()" class="w-10 h-6 bg-transparent cursor-pointer">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="document.getElementById('imgProf').click()" class="text-[9px] bg-slate-800 text-white p-2 rounded-lg font-bold">FOTO PROF</button>
-                        <button onclick="document.getElementById('imgAluno').click()" class="text-[9px] bg-slate-200 dark:bg-slate-700 p-2 rounded-lg font-bold">FOTO ALUNO</button>
-                        <input type="file" id="imgProf" class="hidden" accept="image/*" onchange="handleImage(this, 'prof')">
-                        <input type="file" id="imgAluno" class="hidden" accept="image/*" onchange="handleImage(this, 'student')">
                     </div>
                 </div>
             </div>
@@ -138,7 +139,7 @@
         };
 
         let workoutData = { 
-            student: "", generalNotes: "", photoProf: "", photoStudent: "",
+            student: "", generalNotes: "", photoProf: "https://zeus-rr.github.io/treino/icon.png", photoStudent: "",
             profName: "PERSONAL _ JAQUE", profPhone: "5515981776856", themeColor: "#FF1493",
             days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
         };
@@ -165,6 +166,10 @@
             document.getElementById('confPhone').value = workoutData.profPhone;
             document.getElementById('confColor').value = workoutData.themeColor;
             
+            // Sincroniza os inputs de URL
+            document.getElementById('urlProf').value = workoutData.photoProf || "";
+            document.getElementById('urlAluno').value = workoutData.photoStudent || "";
+            
             const firstName = workoutData.profName.split(' ')[0];
             document.getElementById('waText').innerText = `Falar com ${firstName}`;
             document.getElementById('waFloat').href = `https://api.whatsapp.com/send?phone=${workoutData.profPhone}&text=Oi ${firstName}, tenho uma dúvida!`;
@@ -172,6 +177,8 @@
             if(workoutData.photoProf) {
                 document.getElementById('displayImgProf').src = workoutData.photoProf;
                 document.getElementById('waPhoto').src = workoutData.photoProf;
+            } else {
+                document.getElementById('displayImgProf').src = "https://zeus-rr.github.io/treino/icon.png";
             }
         }
 
@@ -182,26 +189,11 @@
             applyConfigs(); save();
         }
 
-        function handleImage(input, type) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX = 150;
-                    const scale = MAX / Math.max(img.width, img.height);
-                    canvas.width = img.width * scale; canvas.height = img.height * scale;
-                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const base64 = canvas.toDataURL('image/jpeg', 0.7);
-                    if (type === 'prof') workoutData.photoProf = base64;
-                    else workoutData.photoStudent = base64;
-                    applyConfigs(); save(); render();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        function handleURLImage(input, type) {
+            const url = input.value.trim();
+            if (type === 'prof') workoutData.photoProf = url;
+            else workoutData.photoStudent = url;
+            applyConfigs(); save(); render();
         }
 
         function playClickSound() {
@@ -237,9 +229,12 @@
                 document.getElementById('generalNotes').value = workoutData.generalNotes || "";
             }
             
+            const studentImg = document.getElementById('displayImgAluno');
             if (workoutData.photoStudent) {
-                document.getElementById('displayImgAluno').src = workoutData.photoStudent;
-                document.getElementById('displayImgAluno').classList.remove('hidden');
+                studentImg.src = workoutData.photoStudent;
+                studentImg.classList.remove('hidden');
+            } else {
+                studentImg.classList.add('hidden');
             }
             document.getElementById('studentDisplayHead').innerText = workoutData.student ? `ALUNO: ${workoutData.student}` : "";
 
@@ -336,13 +331,7 @@
         function shortenLinkWithName() {
             const baseUrl = "https://abre.ai/index.php?a=shorten&url=";
             const longUrl = encodeURIComponent(getFullURL());
-            
-            // Limpa o nome do aluno para usar como apelido (remove espaços e caracteres especiais)
-            const studentAlias = workoutData.student.toLowerCase()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9]/g, "");
-
-            // Abre o abre.ai já com a URL e o apelido sugerido
+            const studentAlias = workoutData.student.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
             window.open(`${baseUrl}${longUrl}&custom=${studentAlias}`, '_blank');
         }
 
@@ -351,7 +340,6 @@
             window.open(`https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino atualizado: ${url}`, '_blank');
         }
 
-        // BUSCA
         document.getElementById('searchEx').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             document.querySelectorAll('#accordionLib .category-content').forEach(cat => {
