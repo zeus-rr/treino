@@ -7,6 +7,25 @@
     <title id="pageTitle">SISTEMA DE TREINO PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // --- TRAVA DE SEGURANÇA E REDIRECIONAMENTO ---
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isStudent = urlParams.has('aluno');
+            const isProf = urlParams.has('auth');
+
+            if (!isStudent && !isProf) {
+                // Bloqueia o carregamento e mostra aviso
+                document.documentElement.innerHTML = `
+                <body style="background:#0b0f1a; color:white; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:sans-serif; text-align:center;">
+                    <img src="https://zeus-rr.github.io/treino/icon.png" style="width:80px; margin-bottom:20px;">
+                    <h1 style="color:#FF1493; font-weight:900;">ACESSO RESTRITO</h1>
+                    <p style="opacity:0.7;">Faça login no Painel Administrativo para continuar.</p>
+                    <a href="admin.html" style="margin-top:20px; background:#FF1493; color:white; padding:12px 25px; border-radius:10px; text-decoration:none; font-weight:bold; text-transform:uppercase; font-size:12px;">Ir para Login</a>
+                </body>`;
+                window.stop(); 
+            }
+        })();
+
         tailwind.config = {
             darkMode: 'class', 
             theme: { 
@@ -58,7 +77,7 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <img id="displayImgProf" src="https://zeus-rr.github.io/treino/icon.png" class="w-10 h-10 rounded-full border-2 border-pink-hot object-cover shadow-lg">
-                <h1 id="brandName" class="text-xl italic uppercase tracking-tighter pink-bold">PERSONAL _ JAQUE</h1>
+                <h1 id="brandName" class="text-xl italic uppercase tracking-tighter pink-bold">SISTEMA ZEUS</h1>
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2">
@@ -66,6 +85,7 @@
                     <div id="studentDisplayHead" class="text-sm font-bold pink-bold hidden sm:block"></div>
                 </div>
                 <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border">🌓</button>
+                <button onclick="window.location.href='admin.html'" class="admin-ui p-2 px-3 rounded-xl bg-red-500/10 text-red-500 text-[10px] font-black border border-red-500/20">SAIR</button>
             </div>
         </div>
     </header>
@@ -73,15 +93,15 @@
     <main class="max-w-[1600px] mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
         <aside class="lg:col-span-4 space-y-4 admin-ui">
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-pink-hot/20">
-                <h3 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">Painel do Professor</h3>
+                <h3 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">Configurações Ativas</h3>
                 <div class="space-y-3">
                     <input type="text" id="confName" oninput="updateConfigs()" placeholder="Nome da Marca" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none border-b-2 border-pink-hot">
                     <input type="text" id="confPhone" oninput="updateConfigs()" placeholder="WhatsApp (Ex: 55159...)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-sm font-bold outline-none">
                     
                     <div class="space-y-2 py-2">
                         <label class="text-[9px] font-bold uppercase opacity-60 ml-1">URLs das Imagens</label>
-                        <input type="url" id="urlProf" oninput="handleURLImage(this, 'prof')" placeholder="Link Foto Professor (URL)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
-                        <input type="url" id="urlAluno" oninput="handleURLImage(this, 'student')" placeholder="Link Foto Aluno (URL)" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
+                        <input type="url" id="urlProf" oninput="handleURLImage(this, 'prof')" placeholder="Link Foto Professor" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
+                        <input type="url" id="urlAluno" oninput="handleURLImage(this, 'student')" placeholder="Link Foto Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-[10px] font-bold outline-none border-b border-pink-hot/30">
                     </div>
 
                     <div class="flex items-center justify-between bg-slate-100 dark:bg-slate-800 p-2 rounded-lg">
@@ -92,17 +112,16 @@
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
-                <h3 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">Histórico / Salvar Treino</h3>
+                <h3 class="text-[10px] font-black uppercase mb-4 text-pink-hot tracking-widest">Histórico de Treinos</h3>
                 <div class="flex gap-2 mb-4">
                     <button onclick="saveToHistory()" class="flex-1 bg-pink-hot text-white text-[9px] font-bold p-2 rounded-lg uppercase">Salvar Atual</button>
                 </div>
-                <div id="historyList" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
-                    </div>
+                <div id="historyList" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar"></div>
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
                 <label class="text-[10px] font-bold uppercase opacity-50 ml-2">Dados do Aluno</label>
-                <input type="text" id="studentName" oninput="updateHeader()" placeholder="Nome do Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3 font-bold outline-none focus:ring-2 focus:ring-pink-hot">
+                <input type="text" id="studentName" oninput="updateHeader()" placeholder="Nome do Aluno" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-3 font-bold outline-none">
                 <select id="daySelector" class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl font-bold text-sm outline-none">
                     <option value="segunda">Segunda-feira</option>
                     <option value="terca">Terça-feira</option>
@@ -114,7 +133,7 @@
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-xl border border-slate-200 dark:border-slate-800">
-                <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Biblioteca Completa</h3>
+                <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Biblioteca de Exercícios</h3>
                 <input type="text" id="searchEx" placeholder="Buscar exercício..." class="w-full bg-slate-100 dark:bg-slate-800 p-3 rounded-xl mb-4 text-sm outline-none">
                 <div id="accordionLib" class="space-y-2 max-h-[450px] overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
@@ -133,19 +152,19 @@
 
             <div id="finishArea" class="hidden text-center p-10 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-dashed border-pink-hot">
                 <h2 class="text-2xl font-black text-pink-hot mb-2">TREINO CONCLUÍDO! 🔥</h2>
-                <p class="text-sm opacity-70">Parabéns pelo esforço hoje.</p>
-                <button onclick="location.reload()" class="mt-4 bg-pink-hot text-white px-6 py-2 rounded-full font-bold text-xs">REINICIAR CHECKLIST</button>
+                <p class="text-sm opacity-70">Foco mantido. Até amanhã!</p>
+                <button onclick="location.reload()" class="mt-4 bg-pink-hot text-white px-6 py-2 rounded-full font-bold text-xs">REINICIAR</button>
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800">
                 <h3 class="text-xs font-black uppercase mb-4 text-pink-hot tracking-widest">Observações Gerais</h3>
-                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none min-h-[100px]" placeholder="Dicas de cardio, descanso ou avisos..."></textarea>
+                <textarea id="generalNotes" oninput="save()" class="w-full bg-slate-100 dark:bg-slate-800 p-4 rounded-xl text-sm outline-none min-h-[100px]" placeholder="Dicas de cardio, descanso..."></textarea>
             </div>
         </section>
     </main>
 
     <script>
-        const exerciseLibrary = {
+       const exerciseLibrary = {
             "Peito (Variantes)": ["Supino Reto Barra", "Supino Reto Halteres", "Supino Inclinado Barra", "Supino Inclinado Halteres", "Supino Declinado", "Crucifixo Reto", "Crucifixo Inclinado", "Peck Deck (Voador)", "Crossover Cabo Alto", "Crossover Cabo Médio", "Crossover Cabo Baixo", "Flexão de Braços Solo", "Supino Máquina Convergente", "Fly no Banco 30º", "Pullover Halter", "Dips (Paralelas) Peito"],
             "Costas (Dorsal/Lombar)": ["Puxada Frente Aberta", "Puxada Triângulo", "Puxada Supinada", "Remada Curvada Barra", "Remada Curvada Halteres", "Remada Unilateral (Serrote)", "Remada Baixa Polia", "Remada Cavalinho", "Pulldown Corda", "Barra Fixa Aberta", "Levantamento Terra Clássico", "Extensão Lombar", "Remada Máquina Articulada", "Face Pull"],
             "Pernas (Quadríceps)": ["Agachamento Livre Barra", "Agachamento Hack", "Leg Press 45º", "Leg Press Horizontal", "Cadeira Extensora", "Agachamento Búlgaro", "Afundo com Halteres", "Passada (Walking Lunges)", "Agachamento Sumô", "Sissy Squat"],
@@ -160,7 +179,7 @@
 
         let workoutData = { 
             student: "", generalNotes: "", photoProf: "https://zeus-rr.github.io/treino/icon.png", photoStudent: "",
-            profName: "PERSONAL _ JAQUE", profPhone: "5515981776856", themeColor: "#FF1493",
+            profName: "SISTEMA ZEUS", profPhone: "5500000000000", themeColor: "#FF1493",
             days: { segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] } 
         };
 
@@ -168,6 +187,25 @@
             renderLibrary();
             const urlParams = new URLSearchParams(window.location.search);
             const alunoData = urlParams.get('aluno');
+            const authProf = urlParams.get('auth');
+
+            // --- LÓGICA DE LOGIN DO PROFESSOR (Vindo do admin.html) ---
+            if (authProf) {
+                try {
+                    const prof = JSON.parse(atob(authProf));
+                    // Captura os dados do professor do LocalStorage para preencher o treino
+                    const staff = JSON.parse(localStorage.getItem('staff_data')) || [];
+                    const profFull = staff.find(p => p.id === prof.id);
+                    
+                    if(profFull) {
+                        workoutData.profName = profFull.name;
+                        workoutData.photoProf = profFull.photo;
+                        workoutData.themeColor = profFull.color;
+                        applyConfigs();
+                    }
+                } catch(e) { console.error("Erro na auth prof"); }
+            }
+
             if (alunoData) {
                 try {
                     const decoded = decodeURIComponent(atob(alunoData).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
@@ -196,7 +234,7 @@
             history.unshift(entry);
             localStorage.setItem('jaque_history', JSON.stringify(history));
             renderHistory();
-            alert("Treino de " + workoutData.student + " salvo no histórico!");
+            alert("Treino salvo!");
         }
 
         function renderHistory() {
@@ -218,7 +256,7 @@
         }
 
         function loadHistoryItem(id) {
-            if(!confirm("Carregar este treino? Isso substituirá o que está na tela.")) return;
+            if(!confirm("Carregar este treino?")) return;
             let history = JSON.parse(localStorage.getItem('jaque_history') || '[]');
             const item = history.find(i => i.id === id);
             if(item) {
@@ -236,26 +274,15 @@
             renderHistory();
         }
 
-        // --- FUNÇÕES DE CHECKLIST (MODO ALUNO) ---
-        function toggleCheck(el) {
-            el.classList.toggle('checked');
-            updateProgress();
-            playClickSound();
-        }
-
+        // --- FUNCIONALIDADES DO TREINO ---
+        function toggleCheck(el) { el.classList.toggle('checked'); updateProgress(); }
         function updateProgress() {
             const dots = document.querySelectorAll('.serie-dot');
             if(!dots.length) return;
             const checked = document.querySelectorAll('.serie-dot.checked');
             const pct = (checked.length / dots.length) * 100;
             document.getElementById('progressFill').style.width = pct + '%';
-            
-            if(pct === 100) {
-                document.getElementById('finishArea').classList.remove('hidden');
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            } else {
-                document.getElementById('finishArea').classList.add('hidden');
-            }
+            if(pct === 100) document.getElementById('finishArea').classList.remove('hidden');
         }
 
         function applyConfigs() {
@@ -289,22 +316,7 @@
             applyConfigs(); save(); render();
         }
 
-        function playClickSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const g = ctx.createGain();
-                osc.connect(g); g.connect(ctx.destination);
-                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
-                g.gain.setValueAtTime(0.1, ctx.currentTime);
-                g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-                osc.start(); osc.stop(ctx.currentTime + 0.1);
-            } catch(e) {}
-        }
-
         function addEx(name, el) {
-            playClickSound();
             const day = document.getElementById('daySelector').value;
             workoutData.days[day].push({ n: name, r: "3x12", w: "", obs: "", bi: false });
             el.classList.add('exercise-added');
@@ -338,22 +350,17 @@
                     </h2>
                     <div class="grid gap-3">`;
                 workoutData.days[dayKey].forEach((ex, idx) => {
-                    // Lógica para extrair número de séries (ex: "3x12" -> 3)
                     let numSeries = parseInt(ex.r.split('x')[0]) || 0;
                     let checklistHtml = "";
                     if(isStudent && numSeries > 0 && numSeries < 11) {
                         checklistHtml = `<div class="flex gap-2 mt-3 flex-wrap">`;
-                        for(let i=1; i<=numSeries; i++) {
-                            checklistHtml += `<div class="serie-dot" onclick="toggleCheck(this)">${i}</div>`;
-                        }
+                        for(let i=1; i<=numSeries; i++) checklistHtml += `<div class="serie-dot" onclick="toggleCheck(this)">${i}</div>`;
                         checklistHtml += `</div>`;
                     }
 
                     html += `
-                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col"
-                         draggable="${!isStudent}" ondragstart="handleDragStart(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" data-index="${idx}">
+                    <div class="workout-item ${ex.bi ? 'is-conjugated' : ''} bg-white dark:bg-slate-900 p-4 rounded-[1.5rem] shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col">
                         <div class="flex items-center w-full">
-                            <div class="drag-handle admin-ui">☰</div>
                             <div class="flex-1 flex items-center justify-between">
                                 <div class="flex-1">
                                     <h4 class="font-bold text-xs uppercase">${ex.n}</h4>
@@ -402,22 +409,9 @@
             });
         }
 
-        let dragSrcIndex = null, dragSrcDay = null;
-        function handleDragStart(e) { dragSrcIndex = e.currentTarget.dataset.index; dragSrcDay = e.currentTarget.closest('.day-section').dataset.day; }
-        function handleDragOver(e) { e.preventDefault(); }
-        function handleDrop(e) {
-            const targetDay = e.currentTarget.closest('.day-section').dataset.day;
-            const targetIndex = e.currentTarget.dataset.index;
-            if (dragSrcDay === targetDay) {
-                const item = workoutData.days[dragSrcDay].splice(dragSrcIndex, 1)[0];
-                workoutData.days[dragSrcDay].splice(targetIndex, 0, item);
-                save(); render();
-            }
-        }
-
         function toggleBi(day, idx) { workoutData.days[day][idx].bi = !workoutData.days[day][idx].bi; save(); render(); }
         function duplicateDay(from) {
-            const to = prompt("Copiar para qual dia? (segunda, terca, quarta, quinta, sexta, sabado)");
+            const to = prompt("Copiar para (ex: terca)");
             if(to && workoutData.days[to.toLowerCase()]) { workoutData.days[to.toLowerCase()] = JSON.parse(JSON.stringify(workoutData.days[from])); save(); render(); }
         }
         function save() { if(!document.body.classList.contains('is-student-mode')) { workoutData.student = document.getElementById('studentName').value; workoutData.generalNotes = document.getElementById('generalNotes').value; localStorage.setItem('jaque_final_v1', JSON.stringify(workoutData)); } }
@@ -433,21 +427,15 @@
             return `${window.location.origin}${window.location.pathname}?aluno=${enc}`;
         }
 
-        function generateLink() {
-            navigator.clipboard.writeText(getFullURL());
-            alert("Link do Aluno Copiado com Sucesso!");
-        }
-
+        function generateLink() { navigator.clipboard.writeText(getFullURL()); alert("Link Copiado!"); }
         function shortenLinkWithName() {
-            const baseUrl = "https://abre.ai/index.php?a=shorten&url=";
             const longUrl = encodeURIComponent(getFullURL());
-            const studentAlias = (workoutData.student || "treino").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
-            window.open(`${baseUrl}${longUrl}&custom=${studentAlias}`, '_blank');
+            window.open(`https://abre.ai/index.php?a=shorten&url=${longUrl}`, '_blank');
         }
 
         function sendWhatsApp() {
             const url = getFullURL();
-            window.open(`https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino atualizado: ${url}`, '_blank');
+            window.open(`https://api.whatsapp.com/send?text=Fala ${workoutData.student}, segue seu treino: ${url}`, '_blank');
         }
 
         document.getElementById('searchEx').addEventListener('input', function(e) {
